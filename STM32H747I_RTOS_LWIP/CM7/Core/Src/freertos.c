@@ -75,16 +75,14 @@ void StartNetTask(void *argument)
 
   fd_set read_fds;
   int max_sd;
-  int client_sockets[MAX_CLIENT_CONNECTIONS]; // 클라이언트 소켓 저장 배열
+  int client_sockets[MAX_CLIENT_CONNECTIONS];
   int i, sd;
 
-  // 클라이언트 소켓 배열 초기화
-  for(i = 0;i < MAX_CLIENT_CONNECTIONS;i++)
+  for(i = 0; i < MAX_CLIENT_CONNECTIONS; i++)
   {
     client_sockets[i] = 0;
   }
 
-  // 1. 서버 소켓 생성
   server_sock = lwip_socket(AF_INET, SOCK_STREAM, 0);
   if(server_sock < 0)
   {
@@ -92,7 +90,6 @@ void StartNetTask(void *argument)
     return;
   }
 
-  // SO_REUSEADDR 설정
   if(lwip_setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0)
   {
     lwip_close(server_sock);
@@ -100,7 +97,6 @@ void StartNetTask(void *argument)
     return;
   }
 
-  // 2. 서버 주소 설정 및 바인딩
   memset(&server_addr, 0, sizeof(server_addr));
   server_addr.sin_family = AF_INET;
   server_addr.sin_port = lwip_htons(ECHO_SERVER_PORT);
@@ -113,65 +109,47 @@ void StartNetTask(void *argument)
     return;
   }
 
-  // 3. 연결 대기 (Listen)
-  if(lwip_listen(server_sock, 5) < 0)
+  if(lwip_listen(server_sock, 255) < 0)
   {
     lwip_close(server_sock);
     vTaskDelete(NULL);
     return;
   }
 
-  // 메인 select 루프
   while(1)
   {
     FD_ZERO(&read_fds);
-
     FD_SET(server_sock, &read_fds);
     max_sd = server_sock;
 
-    for(i = 0;i < MAX_CLIENT_CONNECTIONS;i++)
+    for(i = 0; i < MAX_CLIENT_CONNECTIONS; i++)
     {
       sd = client_sockets[i];
       if(sd > 0)
       {
         FD_SET(sd, &read_fds);
       }
-
       if(sd > max_sd)
       {
         max_sd = sd;
       }
     }
 
-    // select 호출: 이벤트 발생 대기 (NULL, NULL)은 타임아웃 없음.
     int activity = lwip_select(max_sd + 1, &read_fds, NULL, NULL, NULL);
 
     if((activity < 0) && (errno != EINTR))
     {
-      // printf("select error: %d\r\n", errno);
-      vTaskDelay(pdMS_TO_TICKS(100)); // 짧은 딜레이 후 재시도
+      vTaskDelay(pdMS_TO_TICKS(100));
       continue;
     }
 
-    // 4. 서버 소켓에 새로운 연결 요청이 왔는지 확인
     if(FD_ISSET(server_sock, &read_fds))
     {
       client_addr_len = sizeof(client_addr);
       int new_sock = lwip_accept(server_sock, (struct sockaddr*) &client_addr, &client_addr_len);
-      if(new_sock < 0)
+      if(new_sock >= 0)
       {
-        // printf("accept error: %d\r\n", new_sock);
-      }
-      else
-      {
-        // 새 클라이언트 연결 수락
-        // printf("New connection, socket fd is %d\r\n", new_sock);
-        // char *ip_str = ip4addr_ntoa((const ip4_addr_t*)&client_addr.sin_addr);
-        // if (ip_str != NULL) {
-        //     printf("Client connected from %s:%d\r\n", ip_str, lwip_ntohs(client_addr.sin_port));
-        // }
-
-        for(i = 0;i < MAX_CLIENT_CONNECTIONS;i++)
+        for(i = 0; i < MAX_CLIENT_CONNECTIONS; i++)
         {
           if(client_sockets[i] == 0)
           {
@@ -181,45 +159,50 @@ void StartNetTask(void *argument)
         }
         if(i == MAX_CLIENT_CONNECTIONS)
         {
-          // printf("Max clients reached, closing new connection\r\n");
           lwip_close(new_sock);
         }
       }
     }
 
-    // 5. 각 클라이언트 소켓에서 데이터가 왔는지 확인
-    for(i = 0;i < MAX_CLIENT_CONNECTIONS;i++)
+    for(i = 0; i < MAX_CLIENT_CONNECTIONS; i++)
     {
       sd = client_sockets[i];
-
       if(sd > 0 && FD_ISSET(sd, &read_fds))
       {
+        // lwip_recv가 반환하는 실제 데이터 길이만큼만 처리
         int recv_len = lwip_recv(sd, recv_buf, RECV_BUF_SIZE, 0);
 
-        if(recv_len == 0)
+        if(recv_len == 0) // 클라이언트 연결 종료
         {
-          // 클라이언트 연결 종료
-          // printf("Host disconnected, fd %d\r\n", sd);
-          lwip_close(sd);
-          client_sockets[i] = 0; // 해당 슬롯 비움
+            lwip_close(sd);
+            client_sockets[i] = 0;
         }
-        else if(recv_len < 0)
+        else if(recv_len < 0) // 수신 에러
         {
-          // 에러 발생 (수신 에러)
-          // printf("Receive error on fd %d: %d\r\n", sd, recv_len);
-          lwip_close(sd);
-          client_sockets[i] = 0; // 해당 슬롯 비움
+            lwip_close(sd);
+            client_sockets[i] = 0;
         }
         else
         {
-          // 데이터 수신 성공, 에코 처리
-          lwip_send(sd, recv_buf, recv_len, 0);
+            // 에코 처리: 수신한 데이터 길이(recv_len)만큼만 송신
+            int sent_total = 0;
+            int sent_len = 0;
+            while(sent_total < recv_len)
+            {
+                sent_len = lwip_send(sd, recv_buf + sent_total, recv_len - sent_total, 0);
+                if(sent_len < 0) // 송신 에러
+                {
+                    lwip_close(sd);
+                    client_sockets[i] = 0;
+                    break;
+                }
+                sent_total += sent_len;
+            }
         }
       }
     }
   }
 
-  // 이 코드는 일반적으로 도달하지 않음
   lwip_close(server_sock);
   vTaskDelete(NULL);
 }
