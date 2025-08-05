@@ -5743,3 +5743,715 @@ java.lang.Exception: Resource '/STM32H747I_RTOS_LWIP_CM7' does not exist.
 
 !ENTRY org.eclipse.cdt.core 1 0 2025-08-02 21:24:18.350
 !MESSAGE Indexed 'STM32H747I_RTOS_LWIP_CM7' (123 sources, 217 headers) in 5.65 sec: 18,538 declarations; 135,474 references; 0 unresolved inclusions; 1 syntax errors; 60 unresolved names (0.039%)
+!SESSION 2025-08-03 10:28:59.053 -----------------------------------------------
+eclipse.buildId=Version 1.19.0
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko_KR
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.e4.ui.workbench 4 0 2025-08-03 10:29:08.313
+!MESSAGE Unable to retrieve the bundle from the URI: bundleclass://com.genuitec.eclipse.meexplorer/com.genuitec.eclipse.meexplorer.breadcrumb.e4.BreadCrumbContainer
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-08-03 10:29:08.753
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-08-03 10:29:08.753
+!MESSAGE Log4j2 initialized with config file G:\WorkSpace\STM32\STM32H7_HAL_EXAMPLES\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-08-03 10:29:15.518
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2025-08-03 22:59:23.029 -----------------------------------------------
+eclipse.buildId=Version 1.19.0
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko_KR
+Framework arguments:  G:\WorkSpace\STM32\STM32H7_HAL_EXAMPLES\STM32H747_FMC\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 G:\WorkSpace\STM32\STM32H7_HAL_EXAMPLES\STM32H747_FMC\.project
+
+!ENTRY org.eclipse.e4.ui.workbench 4 0 2025-08-03 23:02:45.739
+!MESSAGE Unable to retrieve the bundle from the URI: bundleclass://com.genuitec.eclipse.meexplorer/com.genuitec.eclipse.meexplorer.breadcrumb.e4.BreadCrumbContainer
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-08-03 23:02:46.325
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-08-03 23:02:46.326
+!MESSAGE Log4j2 initialized with config file G:\WorkSpace\STM32\STM32H7_HAL_EXAMPLES\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-08-03 23:02:55.908
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-03 23:03:00.083
+!MESSAGE Indexed 'STM32H747_FMC_CM4' (24 sources, 82 headers) in 3.96 sec: 6,944 declarations; 54,156 references; 6 unresolved inclusions; 70 syntax errors; 2,544 unresolved names (4%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-03 23:03:05.096
+!MESSAGE Indexed 'STM32H747_FMC_CM7' (34 sources, 92 headers) in 2.81 sec: 9,120 declarations; 70,200 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0025%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-03 23:16:04.397
+!MESSAGE Indexed 'STM32H747_FMC_CM4' (24 sources, 85 headers) in 2.11 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-03 23:16:06.714
+!MESSAGE Indexed 'STM32H747_FMC_CM7' (34 sources, 92 headers) in 2.31 sec: 9,127 declarations; 70,282 references; 0 unresolved inclusions; 3 syntax errors; 5 unresolved names (0.0063%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-03 23:17:09.228
+!MESSAGE Indexed 'STM32H747_FMC_CM4' (24 sources, 85 headers) in 1.77 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-03 23:17:11.410
+!MESSAGE Indexed 'STM32H747_FMC_CM7' (34 sources, 92 headers) in 2.18 sec: 9,127 declarations; 70,304 references; 0 unresolved inclusions; 1 syntax errors; 5 unresolved names (0.0063%)
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 5012 2025-08-03 23:19:55.818
+!MESSAGE Error in final launch sequence:
+
+Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 1
+org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugSession(GdbLaunchDelegate.java:252)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugger(GdbLaunchDelegate.java:109)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launch(GdbLaunchDelegate.java:97)
+	at com.st.stm32cube.ide.mcu.debug.launch.DSFDelegate.launch(DSFDelegate.java:336)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:805)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:716)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1054)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$1.run(DebugUIPlugin.java:1257)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Contains: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+!SUBENTRY 1 org.eclipse.cdt.dsf 4 10004 2025-08-03 23:19:55.819
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!SUBENTRY 2 org.eclipse.cdt.dsf.gdb 4 10004 2025-08-03 23:19:55.819
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 0
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 5012 2025-08-03 23:21:10.176
+!MESSAGE Error in final launch sequence:
+
+Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 1
+org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugSession(GdbLaunchDelegate.java:252)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugger(GdbLaunchDelegate.java:109)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launch(GdbLaunchDelegate.java:97)
+	at com.st.stm32cube.ide.mcu.debug.launch.DSFDelegate.launch(DSFDelegate.java:336)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:805)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:716)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1054)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$1.run(DebugUIPlugin.java:1257)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Contains: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+!SUBENTRY 1 org.eclipse.cdt.dsf 4 10004 2025-08-03 23:21:10.176
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!SUBENTRY 2 org.eclipse.cdt.dsf.gdb 4 10004 2025-08-03 23:21:10.176
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 0
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 5012 2025-08-03 23:21:46.553
+!MESSAGE Error in final launch sequence:
+
+Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 1
+org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugSession(GdbLaunchDelegate.java:252)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugger(GdbLaunchDelegate.java:109)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launch(GdbLaunchDelegate.java:97)
+	at com.st.stm32cube.ide.mcu.debug.launch.DSFDelegate.launch(DSFDelegate.java:336)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:805)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:716)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1054)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$1.run(DebugUIPlugin.java:1257)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Contains: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+!SUBENTRY 1 org.eclipse.cdt.dsf 4 10004 2025-08-03 23:21:46.553
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!SUBENTRY 2 org.eclipse.cdt.dsf.gdb 4 10004 2025-08-03 23:21:46.553
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 0
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+
+!ENTRY org.eclipse.cdt.managedbuilder.core 4 0 2025-08-03 23:22:01.330
+!MESSAGE Project 'STM32H7_RTOS_LWIP' is not open.
+!STACK 1
+org.eclipse.core.internal.resources.ResourceException(/STM32H7_RTOS_LWIP)[372]: java.lang.Exception: Project 'STM32H7_RTOS_LWIP' is not open.
+	at org.eclipse.core.internal.resources.ResourceException.provideStackTrace(ResourceException.java:42)
+	at org.eclipse.core.internal.resources.ResourceException.<init>(ResourceException.java:38)
+	at org.eclipse.core.internal.resources.Project.checkAccessible(Project.java:186)
+	at org.eclipse.core.internal.resources.Project.getDescription(Project.java:430)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.cacheNaturesIdsUsedOnCache(ConfigurationDataProvider.java:383)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.loadConfiguration(ConfigurationDataProvider.java:580)
+	at org.eclipse.cdt.internal.core.settings.model.CConfigurationDescriptionCache.loadData(CConfigurationDescriptionCache.java:139)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescription.loadDatas(CProjectDescription.java:199)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.loadProjectDescription(XmlProjectDescriptionStorage.java:509)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.getProjectDescription(XmlProjectDescriptionStorage.java:239)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescriptionInternal(CProjectDescriptionManager.java:426)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:408)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:402)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:395)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.isNewStyleProject(CProjectDescriptionManager.java:2464)
+	at org.eclipse.cdt.core.model.CoreModel.isNewStyleProject(CoreModel.java:1457)
+	at org.eclipse.cdt.ui.newui.ManageConfigSelector.getProjects(ManageConfigSelector.java:104)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.hasManagedCdtProjectSelection(HasManagedCdtProjectSelection.java:43)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.test(HasManagedCdtProjectSelection.java:33)
+	at org.eclipse.core.internal.expressions.Property.test(Property.java:65)
+	at org.eclipse.core.expressions.TestExpression.evaluate(TestExpression.java:107)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:76)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:106)
+	at org.eclipse.ui.internal.services.EvaluationReference.changed(EvaluationReference.java:100)
+	at org.eclipse.e4.core.internal.contexts.TrackableComputationExt.update(TrackableComputationExt.java:105)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.processScheduled(EclipseContext.java:358)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.set(EclipseContext.java:374)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.deactivate(EclipseContext.java:681)
+	at org.eclipse.e4.ui.workbench.renderers.swt.MenuManagerHideProcessor.lambda$1(MenuManagerHideProcessor.java:140)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:40)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:132)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4099)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3715)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$5.run(PartRenderingEngine.java:1151)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1042)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:153)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:639)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:546)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:173)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:152)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:208)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:143)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:109)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:439)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:271)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:668)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:605)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1481)
+!SUBENTRY 1 org.eclipse.core.resources 4 372 2025-08-03 23:22:01.333
+!MESSAGE Project 'STM32H7_RTOS_LWIP' is not open.
+!STACK 0
+java.lang.Exception: Project 'STM32H7_RTOS_LWIP' is not open.
+	at org.eclipse.core.internal.resources.ResourceException.provideStackTrace(ResourceException.java:42)
+	at org.eclipse.core.internal.resources.ResourceException.<init>(ResourceException.java:38)
+	at org.eclipse.core.internal.resources.Project.checkAccessible(Project.java:186)
+	at org.eclipse.core.internal.resources.Project.getDescription(Project.java:430)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.cacheNaturesIdsUsedOnCache(ConfigurationDataProvider.java:383)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.loadConfiguration(ConfigurationDataProvider.java:580)
+	at org.eclipse.cdt.internal.core.settings.model.CConfigurationDescriptionCache.loadData(CConfigurationDescriptionCache.java:139)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescription.loadDatas(CProjectDescription.java:199)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.loadProjectDescription(XmlProjectDescriptionStorage.java:509)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.getProjectDescription(XmlProjectDescriptionStorage.java:239)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescriptionInternal(CProjectDescriptionManager.java:426)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:408)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:402)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:395)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.isNewStyleProject(CProjectDescriptionManager.java:2464)
+	at org.eclipse.cdt.core.model.CoreModel.isNewStyleProject(CoreModel.java:1457)
+	at org.eclipse.cdt.ui.newui.ManageConfigSelector.getProjects(ManageConfigSelector.java:104)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.hasManagedCdtProjectSelection(HasManagedCdtProjectSelection.java:43)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.test(HasManagedCdtProjectSelection.java:33)
+	at org.eclipse.core.internal.expressions.Property.test(Property.java:65)
+	at org.eclipse.core.expressions.TestExpression.evaluate(TestExpression.java:107)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:76)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:106)
+	at org.eclipse.ui.internal.services.EvaluationReference.changed(EvaluationReference.java:100)
+	at org.eclipse.e4.core.internal.contexts.TrackableComputationExt.update(TrackableComputationExt.java:105)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.processScheduled(EclipseContext.java:358)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.set(EclipseContext.java:374)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.deactivate(EclipseContext.java:681)
+	at org.eclipse.e4.ui.workbench.renderers.swt.MenuManagerHideProcessor.lambda$1(MenuManagerHideProcessor.java:140)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:40)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:132)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4099)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3715)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$5.run(PartRenderingEngine.java:1151)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1042)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:153)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:639)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:546)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:173)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:152)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:208)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:143)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:109)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:439)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:271)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:668)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:605)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1481)
+
+!ENTRY org.eclipse.cdt.core 4 0 2025-08-03 23:22:01.357
+!MESSAGE Error
+!STACK 1
+org.eclipse.core.runtime.CoreException: attempt to set description for a project which does not exist or not open
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.setCurrentDescription(XmlProjectDescriptionStorage.java:382)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.setLoaddedDescriptionOnLoad(XmlProjectDescriptionStorage.java:360)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.getProjectDescription(XmlProjectDescriptionStorage.java:258)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescriptionInternal(CProjectDescriptionManager.java:426)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:408)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:402)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:395)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.isNewStyleProject(CProjectDescriptionManager.java:2464)
+	at org.eclipse.cdt.core.model.CoreModel.isNewStyleProject(CoreModel.java:1457)
+	at org.eclipse.cdt.ui.newui.ManageConfigSelector.getProjects(ManageConfigSelector.java:104)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.hasManagedCdtProjectSelection(HasManagedCdtProjectSelection.java:43)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.test(HasManagedCdtProjectSelection.java:33)
+	at org.eclipse.core.internal.expressions.Property.test(Property.java:65)
+	at org.eclipse.core.expressions.TestExpression.evaluate(TestExpression.java:107)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:76)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:106)
+	at org.eclipse.ui.internal.services.EvaluationReference.changed(EvaluationReference.java:100)
+	at org.eclipse.e4.core.internal.contexts.TrackableComputationExt.update(TrackableComputationExt.java:105)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.processScheduled(EclipseContext.java:358)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.set(EclipseContext.java:374)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.deactivate(EclipseContext.java:681)
+	at org.eclipse.e4.ui.workbench.renderers.swt.MenuManagerHideProcessor.lambda$1(MenuManagerHideProcessor.java:140)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:40)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:132)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4099)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3715)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$5.run(PartRenderingEngine.java:1151)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1042)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:153)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:639)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:546)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:173)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:152)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:208)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:143)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:109)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:439)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:271)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:668)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:605)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1481)
+!SUBENTRY 1 org.eclipse.cdt.core 4 -1 2025-08-03 23:22:01.357
+!MESSAGE attempt to set description for a project which does not exist or not open
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 5012 2025-08-03 23:22:40.491
+!MESSAGE Error in final launch sequence:
+
+Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 1
+org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugSession(GdbLaunchDelegate.java:252)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugger(GdbLaunchDelegate.java:109)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launch(GdbLaunchDelegate.java:97)
+	at com.st.stm32cube.ide.mcu.debug.launch.DSFDelegate.launch(DSFDelegate.java:336)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:805)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:716)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1054)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$1.run(DebugUIPlugin.java:1257)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Contains: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+!SUBENTRY 1 org.eclipse.cdt.dsf 4 10004 2025-08-03 23:22:40.491
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!SUBENTRY 2 org.eclipse.cdt.dsf.gdb 4 10004 2025-08-03 23:22:40.491
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 0
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 5012 2025-08-03 23:23:07.647
+!MESSAGE Error in final launch sequence:
+
+Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 1
+org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugSession(GdbLaunchDelegate.java:252)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugger(GdbLaunchDelegate.java:109)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launch(GdbLaunchDelegate.java:97)
+	at com.st.stm32cube.ide.mcu.debug.launch.DSFDelegate.launch(DSFDelegate.java:336)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:805)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:716)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1054)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$1.run(DebugUIPlugin.java:1257)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Contains: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+!SUBENTRY 1 org.eclipse.cdt.dsf 4 10004 2025-08-03 23:23:07.647
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!SUBENTRY 2 org.eclipse.cdt.dsf.gdb 4 10004 2025-08-03 23:23:07.647
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 0
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 5012 2025-08-03 23:25:11.312
+!MESSAGE Error in final launch sequence:
+
+Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 1
+org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugSession(GdbLaunchDelegate.java:252)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugger(GdbLaunchDelegate.java:109)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launch(GdbLaunchDelegate.java:97)
+	at com.st.stm32cube.ide.mcu.debug.launch.DSFDelegate.launch(DSFDelegate.java:336)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:805)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:716)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1054)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$1.run(DebugUIPlugin.java:1257)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Contains: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+!SUBENTRY 1 org.eclipse.cdt.dsf 4 10004 2025-08-03 23:25:11.312
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!SUBENTRY 2 org.eclipse.cdt.dsf.gdb 4 10004 2025-08-03 23:25:11.312
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 0
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 5012 2025-08-03 23:36:05.528
+!MESSAGE Error in final launch sequence:
+
+Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 1
+org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugSession(GdbLaunchDelegate.java:252)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugger(GdbLaunchDelegate.java:109)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launch(GdbLaunchDelegate.java:97)
+	at com.st.stm32cube.ide.mcu.debug.launch.DSFDelegate.launch(DSFDelegate.java:336)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:805)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:716)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1054)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$1.run(DebugUIPlugin.java:1257)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Contains: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+!SUBENTRY 1 org.eclipse.cdt.dsf 4 10004 2025-08-03 23:36:05.528
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!SUBENTRY 2 org.eclipse.cdt.dsf.gdb 4 10004 2025-08-03 23:36:05.528
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 0
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 5012 2025-08-03 23:40:17.760
+!MESSAGE Error in final launch sequence:
+
+Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 1
+org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugSession(GdbLaunchDelegate.java:252)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugger(GdbLaunchDelegate.java:109)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launch(GdbLaunchDelegate.java:97)
+	at com.st.stm32cube.ide.mcu.debug.launch.DSFDelegate.launch(DSFDelegate.java:336)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:805)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:716)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1054)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$1.run(DebugUIPlugin.java:1257)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Contains: Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+!SUBENTRY 1 org.eclipse.cdt.dsf 4 10004 2025-08-03 23:40:17.760
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!SUBENTRY 2 org.eclipse.cdt.dsf.gdb 4 10004 2025-08-03 23:40:17.760
+!MESSAGE Failed to execute MI command:
+load G:\\WorkSpace\\STM32\\STM32H7_HAL_EXAMPLES\\STM32H747_FMC\\CM7\\Debug\\STM32H747_FMC_CM7.elf 
+
+Error message from debugger back end:
+Load failed
+!STACK 0
+java.lang.Exception: Load failed
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+!SESSION 2025-08-04 22:22:25.700 -----------------------------------------------
+eclipse.buildId=Version 1.19.0
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko_KR
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.e4.ui.workbench 4 0 2025-08-04 22:22:34.357
+!MESSAGE Unable to retrieve the bundle from the URI: bundleclass://com.genuitec.eclipse.meexplorer/com.genuitec.eclipse.meexplorer.breadcrumb.e4.BreadCrumbContainer
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-08-04 22:22:34.904
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-08-04 22:22:34.905
+!MESSAGE Log4j2 initialized with config file G:\WorkSpace\STM32\STM32H7_HAL_EXAMPLES\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-08-04 22:22:47.874
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-04 23:43:58.628
+!MESSAGE Indexed 'STM32H747_FMC_CM4' (24 sources, 85 headers) in 2.53 sec: 7,845 declarations; 57,684 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-04 23:44:00.834
+!MESSAGE Indexed 'STM32H747_FMC_CM7' (34 sources, 92 headers) in 2.18 sec: 9,131 declarations; 70,371 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0025%)
+
+!ENTRY org.eclipse.cdt.dsf 4 10005 2025-08-04 23:53:26.367
+!MESSAGE Breakpoint already removed
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 10005 2025-08-04 23:53:26.367
+!MESSAGE Breakpoint already removed
+
+!ENTRY org.eclipse.cdt.dsf 4 10005 2025-08-04 23:57:10.402
+!MESSAGE Breakpoint already removed
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 10005 2025-08-04 23:57:10.402
+!MESSAGE Breakpoint already removed
+!SESSION 2025-08-05 00:18:14.414 -----------------------------------------------
+eclipse.buildId=Version 1.19.0
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko_KR
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.e4.ui.workbench 4 0 2025-08-05 00:18:19.496
+!MESSAGE Unable to retrieve the bundle from the URI: bundleclass://com.genuitec.eclipse.meexplorer/com.genuitec.eclipse.meexplorer.breadcrumb.e4.BreadCrumbContainer
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-08-05 00:18:19.939
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-08-05 00:18:19.939
+!MESSAGE Log4j2 initialized with config file G:\WorkSpace\STM32\STM32H7_HAL_EXAMPLES\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-08-05 00:18:25.514
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2025-08-05 22:07:46.665 -----------------------------------------------
+eclipse.buildId=Version 1.19.0
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko_KR
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.e4.ui.workbench 4 0 2025-08-05 22:07:54.620
+!MESSAGE Unable to retrieve the bundle from the URI: bundleclass://com.genuitec.eclipse.meexplorer/com.genuitec.eclipse.meexplorer.breadcrumb.e4.BreadCrumbContainer
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-08-05 22:07:55.229
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-08-05 22:07:55.230
+!MESSAGE Log4j2 initialized with config file G:\WorkSpace\STM32\STM32H7_HAL_EXAMPLES\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-08-05 22:08:04.746
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-05 22:51:12.090
+!MESSAGE Indexed 'STM32H747_FMC_CM4' (24 sources, 85 headers) in 3.26 sec: 7,845 declarations; 57,684 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-05 22:51:14.657
+!MESSAGE Indexed 'STM32H747_FMC_CM7' (34 sources, 95 headers) in 2.54 sec: 9,333 declarations; 70,528 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0025%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-05 23:01:02.305
+!MESSAGE Indexed 'STM32H747_FMC_CM4' (24 sources, 85 headers) in 2.06 sec: 7,845 declarations; 57,684 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-05 23:01:04.511
+!MESSAGE Indexed 'STM32H747_FMC_CM7' (34 sources, 95 headers) in 2.18 sec: 9,333 declarations; 70,528 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0025%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-05 23:02:01.539
+!MESSAGE Indexed 'STM32H747_FMC_CM4' (24 sources, 85 headers) in 1.73 sec: 7,845 declarations; 57,684 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-05 23:02:03.701
+!MESSAGE Indexed 'STM32H747_FMC_CM7' (34 sources, 95 headers) in 2.16 sec: 9,333 declarations; 70,528 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0025%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-05 23:06:22.185
+!MESSAGE Indexed 'STM32H747_FMC_CM4' (24 sources, 85 headers) in 1.77 sec: 7,845 declarations; 57,684 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-05 23:06:24.464
+!MESSAGE Indexed 'STM32H747_FMC_CM7' (34 sources, 95 headers) in 2.26 sec: 9,333 declarations; 70,528 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0025%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-05 23:17:30.090
+!MESSAGE Indexed 'STM32H747_FMC_CM4' (24 sources, 85 headers) in 1.86 sec: 7,845 declarations; 57,684 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-05 23:17:32.358
+!MESSAGE Indexed 'STM32H747_FMC_CM7' (34 sources, 95 headers) in 2.25 sec: 9,333 declarations; 70,532 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0025%)

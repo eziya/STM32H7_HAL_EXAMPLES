@@ -19,6 +19,7 @@ semanticHighlighting.enumerator.color=152,118,170
 semanticHighlighting.function.color=169,183,198
 semanticHighlighting.functionDeclaration.color=255,198,109
 semanticHighlighting.typedef.color=169,183,198
+sourceHoverBackgroundColor=28,31,34
 spelling_locale_initialized=true
 useAnnotationsPrefPage=true
 useQuickDiffPrefPage=true
