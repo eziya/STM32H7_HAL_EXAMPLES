@@ -57,7 +57,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-#define SDRAM_TEST_SIZE 1000
+#define SDRAM_TEST_SIZE 100000
 __attribute__((section(".sdram_data"))) uint32_t my_sdram_data[SDRAM_TEST_SIZE];
 /* USER CODE END PV */
 

@@ -6455,3 +6455,28 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
 !ENTRY org.eclipse.cdt.core 1 0 2025-08-05 23:17:32.358
 !MESSAGE Indexed 'STM32H747_FMC_CM7' (34 sources, 95 headers) in 2.25 sec: 9,333 declarations; 70,532 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0025%)
+!SESSION 2025-08-06 22:09:43.765 -----------------------------------------------
+eclipse.buildId=Version 1.19.0
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko_KR
+Framework arguments:  G:\WorkSpace\STM32\STM32H7_HAL_EXAMPLES\STM32H747_FMC\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 G:\WorkSpace\STM32\STM32H7_HAL_EXAMPLES\STM32H747_FMC\.project
+
+!ENTRY org.eclipse.e4.ui.workbench 4 0 2025-08-06 22:09:51.647
+!MESSAGE Unable to retrieve the bundle from the URI: bundleclass://com.genuitec.eclipse.meexplorer/com.genuitec.eclipse.meexplorer.breadcrumb.e4.BreadCrumbContainer
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-08-06 22:09:52.301
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-08-06 22:09:52.302
+!MESSAGE Log4j2 initialized with config file G:\WorkSpace\STM32\STM32H7_HAL_EXAMPLES\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-08-06 22:10:00.718
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-06 22:10:05.437
+!MESSAGE Indexed 'STM32H747_FMC_CM4' (24 sources, 85 headers) in 2.37 sec: 7,845 declarations; 57,673 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-06 22:10:08.773
+!MESSAGE Indexed 'STM32H747_FMC_CM7' (34 sources, 95 headers) in 3.32 sec: 9,333 declarations; 70,529 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0025%)
