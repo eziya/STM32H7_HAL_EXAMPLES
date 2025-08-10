@@ -6480,3 +6480,368 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64 G:\WorkSpace\STM32\STM
 
 !ENTRY org.eclipse.cdt.core 1 0 2025-08-06 22:10:08.773
 !MESSAGE Indexed 'STM32H747_FMC_CM7' (34 sources, 95 headers) in 3.32 sec: 9,333 declarations; 70,529 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0025%)
+!SESSION 2025-08-09 12:20:50.044 -----------------------------------------------
+eclipse.buildId=Version 1.19.0
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko_KR
+Framework arguments:  G:\WorkSpace\STM32\STM32H7_HAL_EXAMPLES\STM32H747I_QSPI_EXT_FLASH\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 G:\WorkSpace\STM32\STM32H7_HAL_EXAMPLES\STM32H747I_QSPI_EXT_FLASH\.project
+
+!ENTRY org.eclipse.e4.ui.workbench 4 0 2025-08-09 12:21:01.876
+!MESSAGE Unable to retrieve the bundle from the URI: bundleclass://com.genuitec.eclipse.meexplorer/com.genuitec.eclipse.meexplorer.breadcrumb.e4.BreadCrumbContainer
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-08-09 12:21:02.576
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-08-09 12:21:02.577
+!MESSAGE Log4j2 initialized with config file G:\WorkSpace\STM32\STM32H7_HAL_EXAMPLES\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-08-09 12:21:11.145
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 12:21:15.015
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (26 sources, 85 headers) in 3.66 sec: 7,460 declarations; 54,778 references; 6 unresolved inclusions; 70 syntax errors; 2,421 unresolved names (3.7%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 12:21:18.625
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (28 sources, 89 headers) in 1.98 sec: 8,299 declarations; 62,797 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0028%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 12:32:10.271
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 2.04 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 12:32:12.185
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (28 sources, 89 headers) in 1.91 sec: 8,299 declarations; 62,795 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0028%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 13:13:45.711
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 2.14 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 13:13:47.766
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 2.04 sec: 8,556 declarations; 65,330 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 13:14:52.835
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.85 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 13:14:54.687
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 1.85 sec: 8,556 declarations; 65,330 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 13:15:17.290
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.66 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 13:15:19.209
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 1.92 sec: 8,556 declarations; 65,330 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 13:16:19.765
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.84 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 13:16:21.956
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 2.19 sec: 8,558 declarations; 65,410 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 14:21:50.898
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 2.03 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 14:21:52.870
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 1.96 sec: 8,558 declarations; 65,432 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 14:25:55.116
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.67 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 14:25:57.103
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 1.97 sec: 8,558 declarations; 65,432 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 14:42:07.438
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.9 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 14:42:09.380
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 1.92 sec: 8,558 declarations; 65,436 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 14:43:24.722
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.8 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 14:43:26.682
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 1.94 sec: 8,558 declarations; 65,436 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 14:46:42.087
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.81 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 14:46:44.018
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 1.91 sec: 8,558 declarations; 65,436 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 14:48:01.418
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.8 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 14:48:03.313
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 1.88 sec: 8,558 declarations; 65,436 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 14:49:10.050
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.65 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 14:49:11.951
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 1.89 sec: 8,558 declarations; 65,436 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 15:07:22.601
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.69 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 15:07:24.449
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 1.83 sec: 8,558 declarations; 65,432 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 15:13:14.459
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.81 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 15:13:16.275
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 1.8 sec: 8,558 declarations; 65,432 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 15:29:52.330
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.78 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 15:29:54.287
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 1.94 sec: 8,558 declarations; 65,432 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 15:35:22.782
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.72 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 15:35:24.674
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 1.88 sec: 8,553 declarations; 65,423 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 15:40:41.808
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.77 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-09 15:40:43.657
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 1.83 sec: 8,553 declarations; 65,421 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 5012 2025-08-09 15:59:00.327
+!MESSAGE Error in final launch sequence:
+
+Setup exceptions
+!STACK 1
+org.eclipse.core.runtime.CoreException: Setup exceptions
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugSession(GdbLaunchDelegate.java:252)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugger(GdbLaunchDelegate.java:109)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launch(GdbLaunchDelegate.java:97)
+	at com.st.stm32cube.ide.mcu.debug.launch.DSFDelegate.launch(DSFDelegate.java:336)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:805)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:716)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1054)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$1.run(DebugUIPlugin.java:1257)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+!SUBENTRY 1 com.st.stm32cube.ide.mcu.debug.launch 4 0 2025-08-09 15:59:00.327
+!MESSAGE Setup exceptions
+!SESSION 2025-08-10 08:57:47.811 -----------------------------------------------
+eclipse.buildId=Version 1.19.0
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko_KR
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.e4.ui.workbench 4 0 2025-08-10 08:57:55.095
+!MESSAGE Unable to retrieve the bundle from the URI: bundleclass://com.genuitec.eclipse.meexplorer/com.genuitec.eclipse.meexplorer.breadcrumb.e4.BreadCrumbContainer
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-08-10 08:57:55.657
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-08-10 08:57:55.658
+!MESSAGE Log4j2 initialized with config file G:\WorkSpace\STM32\STM32H7_HAL_EXAMPLES\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-08-10 08:58:05.903
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 09:23:38.031
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM4' (25 sources, 84 headers) in 3.28 sec: 7,453 declarations; 54,716 references; 6 unresolved inclusions; 70 syntax errors; 2,420 unresolved names (3.7%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 09:23:43.071
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7' (61 sources, 140 headers) in 3.42 sec: 15,717 declarations; 116,176 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0015%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 09:35:02.990
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 2.66 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 09:35:08.203
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7' (61 sources, 140 headers) in 3.38 sec: 15,708 declarations; 116,166 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0015%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 09:35:51.806
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.84 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 09:35:54.947
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7' (61 sources, 140 headers) in 3.13 sec: 15,705 declarations; 116,161 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0015%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 09:38:54.195
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 2.27 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 09:38:57.210
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7' (61 sources, 140 headers) in 3.01 sec: 15,709 declarations; 116,241 references; 0 unresolved inclusions; 1 syntax errors; 25 unresolved names (0.019%)
+
+!ENTRY org.eclipse.cdt.dsf 4 10005 2025-08-10 10:10:37.208
+!MESSAGE Request for monitor: 'RequestMonitor (org.eclipse.cdt.dsf.mi.service.MIRunControl$9@2181dd2c): Status ERROR: org.eclipse.cdt.dsf.gdb code=10004 Suspend operation timeout.' resulted in an error.
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 10004 2025-08-10 10:10:37.208
+!MESSAGE Suspend operation timeout.
+
+!ENTRY org.eclipse.cdt.dsf 4 10005 2025-08-10 10:10:38.847
+!MESSAGE Request for monitor: 'RequestMonitor (org.eclipse.cdt.dsf.debug.ui.actions.DsfSuspendCommand$4$1@3624fe0c): Status ERROR: org.eclipse.cdt.dsf.gdb code=10004 Suspend operation timeout.' resulted in an error.
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 10004 2025-08-10 10:10:38.847
+!MESSAGE Suspend operation timeout.
+
+!ENTRY org.eclipse.core.jobs 4 2 2025-08-10 10:20:16.740
+!MESSAGE An internal error occurred during: "Suspend monitor job.".
+!STACK 0
+java.util.concurrent.RejectedExecutionException: Task java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask@3a05cb2c[Not completed, task = java.util.concurrent.Executors$RunnableAdapter@7e7a546d[Wrapped task = org.eclipse.cdt.dsf.gdb.service.GDBRunControl_7_12$MonitorSuspendJob$2@40bd9a3d]] rejected from org.eclipse.cdt.dsf.concurrent.DefaultDsfExecutor@349ba58[Terminated, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 5779]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$AbortPolicy.rejectedExecution(ThreadPoolExecutor.java:2081)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.reject(ThreadPoolExecutor.java:841)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor.delayedExecute(ScheduledThreadPoolExecutor.java:340)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor.schedule(ScheduledThreadPoolExecutor.java:562)
+	at org.eclipse.cdt.dsf.concurrent.DefaultDsfExecutor.schedule(DefaultDsfExecutor.java:450)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor.submit(ScheduledThreadPoolExecutor.java:715)
+	at org.eclipse.cdt.dsf.concurrent.DefaultDsfExecutor.submit(DefaultDsfExecutor.java:482)
+	at org.eclipse.cdt.dsf.gdb.service.GDBRunControl_7_12$MonitorSuspendJob.run(GDBRunControl_7_12.java:358)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.cdt.dsf 4 10005 2025-08-10 10:56:55.103
+!MESSAGE Request for monitor: 'RequestMonitor (org.eclipse.cdt.dsf.mi.service.MIRunControl$9@1c4b9282): Status ERROR: org.eclipse.cdt.dsf.gdb code=10004 Suspend operation timeout.' resulted in an error.
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 10004 2025-08-10 10:56:55.103
+!MESSAGE Suspend operation timeout.
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 5012 2025-08-10 10:57:15.871
+!MESSAGE Error in final launch sequence:
+
+Setup exceptions
+!STACK 1
+org.eclipse.core.runtime.CoreException: Setup exceptions
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugSession(GdbLaunchDelegate.java:252)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugger(GdbLaunchDelegate.java:109)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launch(GdbLaunchDelegate.java:97)
+	at com.st.stm32cube.ide.mcu.debug.launch.DSFDelegate.launch(DSFDelegate.java:336)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:805)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:716)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1054)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$1.run(DebugUIPlugin.java:1257)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+!SUBENTRY 1 com.st.stm32cube.ide.mcu.debug.launch 4 0 2025-08-10 10:57:15.872
+!MESSAGE Setup exceptions
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 11:02:57.895
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7' (62 sources, 142 headers) in 3.06 sec: 15,968 declarations; 118,839 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0015%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 11:37:17.505
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM4' (24 sources, 86 headers) in 1.82 sec: 7,845 declarations; 57,742 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.003%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 11:37:20.645
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7' (62 sources, 142 headers) in 3.11 sec: 16,123 declarations; 119,581 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0015%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 12:03:36.485
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM4' (24 sources, 86 headers) in 2 sec: 7,845 declarations; 57,742 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.003%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 12:03:39.430
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7' (62 sources, 142 headers) in 2.91 sec: 15,976 declarations; 118,880 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0015%)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 13:14:02.856
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 32 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 13:14:02.856
+!MESSAGE Existing sessions are:
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 13:14:02.858
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 32 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 13:14:02.859
+!MESSAGE Existing sessions are:
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 14:44:00.390
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 33 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 14:44:00.390
+!MESSAGE Existing sessions are:
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 14:44:00.391
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 33 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 14:44:00.391
+!MESSAGE Existing sessions are:
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 14:59:27.604
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.85 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 14:59:29.472
+!MESSAGE Indexed 'STM32H747I_QSPI_EXT_FLASH_CM7' (29 sources, 91 headers) in 1.85 sec: 8,561 declarations; 65,428 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0027%)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 15:17:43.021
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 38 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 15:17:43.021
+!MESSAGE Existing sessions are:
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 15:17:43.022
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 38 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 15:17:43.022
+!MESSAGE Existing sessions are:
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 15:51:37.335
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.98 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 15:51:40.485
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7' (62 sources, 142 headers) in 3.12 sec: 15,981 declarations; 118,966 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0015%)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 16:00:12.033
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 42 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 16:00:12.033
+!MESSAGE Existing sessions are:
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 16:00:12.034
+!MESSAGE Error - No active DSF-Session. tmpSessionId = 42 (contextManager row 121)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2025-08-10 16:00:12.034
+!MESSAGE Existing sessions are:
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 16:06:13.032
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.88 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 16:06:16.136
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7' (62 sources, 142 headers) in 3.08 sec: 15,986 declarations; 119,070 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0015%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 16:13:13.329
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.66 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 16:13:16.497
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7' (62 sources, 142 headers) in 3.14 sec: 15,981 declarations; 118,965 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0015%)
+!SESSION 2025-08-10 16:27:11.330 -----------------------------------------------
+eclipse.buildId=Version 1.19.0
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko_KR
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.e4.ui.workbench 4 0 2025-08-10 16:27:20.448
+!MESSAGE Unable to retrieve the bundle from the URI: bundleclass://com.genuitec.eclipse.meexplorer/com.genuitec.eclipse.meexplorer.breadcrumb.e4.BreadCrumbContainer
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-08-10 16:27:20.995
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-08-10 16:27:20.996
+!MESSAGE Log4j2 initialized with config file G:\WorkSpace\STM32\STM32H7_HAL_EXAMPLES\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-08-10 16:27:32.657
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 16:27:53.732
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 4.17 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 16:27:58.259
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7' (62 sources, 142 headers) in 4.47 sec: 15,981 declarations; 118,971 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0015%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 16:57:13.720
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 2.21 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 16:57:16.913
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7' (62 sources, 142 headers) in 3.16 sec: 15,986 declarations; 119,068 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0015%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 17:12:17.927
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 1.72 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 17:12:20.947
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7' (62 sources, 142 headers) in 2.99 sec: 15,986 declarations; 119,092 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0015%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 19:12:44.950
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM4' (24 sources, 85 headers) in 2.32 sec: 7,845 declarations; 57,668 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0031%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-10 19:12:48.969
+!MESSAGE Indexed 'STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7' (62 sources, 142 headers) in 3.98 sec: 15,983 declarations; 119,059 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0015%)

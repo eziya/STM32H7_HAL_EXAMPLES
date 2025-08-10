@@ -1,0 +1,345 @@
+/* USER CODE BEGIN Header */
+/**
+ ******************************************************************************
+ * @file    user_diskio.c
+ * @brief   This file includes a diskio driver skeleton to be completed by the user.
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2025 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
+ /* USER CODE END Header */
+
+#ifdef USE_OBSOLETE_USER_CODE_SECTION_0
+/*
+ * Warning: the user section 0 is no more in use (starting from CubeMx version 4.16.0)
+ * To be suppressed in the future.
+ * Kept to ensure backward compatibility with previous CubeMx versions when
+ * migrating projects.
+ * User code previously added there should be copied in the new user sections before
+ * the section contents can be deleted.
+ */
+/* USER CODE BEGIN 0 */
+/* USER CODE END 0 */
+#endif
+
+/* USER CODE BEGIN DECL */
+
+/* Includes ------------------------------------------------------------------*/
+#include <string.h>
+#include "ff_gen_drv.h"
+#include "quadspi.h"
+#include "mt25ql512abb.h"
+
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+
+#define _USE_IOCTL  1
+
+// STM32H747I-DISCO has two 64MB flash chips = 128MB total
+#define QSPI_FLASH_TOTAL_SIZE      (MT25QL512ABB_FLASH_SIZE * 2)  /* 128 MBytes */
+#define QSPI_FLASH_SECTOR_COUNT    (QSPI_FLASH_TOTAL_SIZE / MT25QL512ABB_SUBSECTOR_4K)
+
+/* Private variables ---------------------------------------------------------*/
+/* Disk status */
+static volatile DSTATUS Stat = STA_NOINIT;
+extern QSPI_HandleTypeDef hqspi;
+
+/* USER CODE END DECL */
+
+/* Private function prototypes -----------------------------------------------*/
+DSTATUS USER_initialize (BYTE pdrv);
+DSTATUS USER_status (BYTE pdrv);
+DRESULT USER_read (BYTE pdrv, BYTE *buff, DWORD sector, UINT count);
+#if _USE_WRITE == 1
+  DRESULT USER_write (BYTE pdrv, const BYTE *buff, DWORD sector, UINT count);
+#endif /* _USE_WRITE == 1 */
+#if _USE_IOCTL == 1
+  DRESULT USER_ioctl (BYTE pdrv, BYTE cmd, void *buff);
+#endif /* _USE_IOCTL == 1 */
+
+Diskio_drvTypeDef  USER_Driver =
+{
+  USER_initialize,
+  USER_status,
+  USER_read,
+#if  _USE_WRITE
+  USER_write,
+#endif  /* _USE_WRITE == 1 */
+#if  _USE_IOCTL == 1
+  USER_ioctl,
+#endif /* _USE_IOCTL == 1 */
+};
+
+/* Private functions ---------------------------------------------------------*/
+
+/**
+  * @brief  Initializes a Drive
+  * @param  pdrv: Physical drive number (0..)
+  * @retval DSTATUS: Operation status
+  */
+DSTATUS USER_initialize (
+	BYTE pdrv           /* Physical drive nmuber to identify the drive */
+)
+{
+  /* USER CODE BEGIN INIT */
+  uint8_t id[6];
+
+  /* We only support drive 0 */
+  if(pdrv != 0)
+  {
+    return STA_NOINIT;
+  }
+
+  /* Check if already initialized */
+  if((Stat & STA_NOINIT) == 0)
+  {
+    return Stat;
+  }
+
+  /* 1. Enter QPI mode */
+  if(MT25QL512ABB_EnterQPIMode(&hqspi) != MT25QL512ABB_OK)
+  {
+    return STA_NOINIT;
+  }
+
+  /* 2. Read ID and verify */
+  if(MT25QL512ABB_ReadID(&hqspi, MT25QL512ABB_QPI_MODE, id, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
+  {
+    return STA_NOINIT;
+  }
+
+  if((id[0] != 0x20) || (id[1] != 0x20) || (id[2] != 0xBA) || (id[3] != 0xBA) || (id[4] != 0x20) || (id[5] != 0x20))
+  {
+    return STA_NOINIT;
+  }
+
+  /* 3. Enter 4-byte address mode */
+  if(MT25QL512ABB_Enter4BytesAddressMode(&hqspi, MT25QL512ABB_QPI_MODE) != MT25QL512ABB_OK)
+  {
+    return STA_NOINIT;
+  }
+
+  /* Initialization successful */
+  Stat &= ~STA_NOINIT;
+  return Stat;
+  /* USER CODE END INIT */
+}
+
+/**
+  * @brief  Gets Disk Status
+  * @param  pdrv: Physical drive number (0..)
+  * @retval DSTATUS: Operation status
+  */
+DSTATUS USER_status (
+    BYTE pdrv       /* Physical drive number to identify the drive */
+)
+{
+  /* USER CODE BEGIN STATUS */
+
+  if (pdrv != 0)
+  {
+    return STA_NOINIT; // We only support drive 0
+  }
+
+  if (Stat & STA_NOINIT)
+  {
+    return Stat; // Return immediately if the drive was never initialized
+  }
+
+  uint8_t reg[2]; // Buffer for status register value (2 bytes for Dual-Flash)
+
+  if (MT25QL512ABB_ReadStatusRegister(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE, reg) != MT25QL512ABB_OK)
+  {
+    Stat |= STA_NOINIT;
+    return Stat;
+  }
+
+  if ((reg[0] & MT25QL512ABB_SR_WIP) || (reg[1] & MT25QL512ABB_SR_WIP))
+  {
+    Stat |= STA_PROTECT;
+  }
+  else
+  {
+    Stat &= ~STA_PROTECT;
+  }
+
+  return Stat;
+  /* USER CODE END STATUS */
+}
+
+/**
+  * @brief  Reads Sector(s)
+  * @param  pdrv: Physical drive number (0..)
+  * @param  *buff: Data buffer to store read data
+  * @param  sector: Sector address (LBA)
+  * @param  count: Number of sectors to read (1..128)
+  * @retval DRESULT: Operation result
+  */
+DRESULT USER_read (
+	BYTE pdrv,      /* Physical drive nmuber to identify the drive */
+	BYTE *buff,     /* Data buffer to store read data */
+	DWORD sector,   /* Sector address in LBA */
+	UINT count      /* Number of sectors to read */
+)
+{
+  /* USER CODE BEGIN READ */
+  uint32_t address = sector * MT25QL512ABB_SUBSECTOR_4K;
+  uint32_t size = count * MT25QL512ABB_SUBSECTOR_4K;
+
+  if(pdrv != 0 || count == 0)
+  {
+    return RES_PARERR;
+  }
+
+  if(Stat & STA_NOINIT)
+  {
+    return RES_NOTRDY;
+  }
+
+  // Invalidate D-Cache before reading to get fresh data from QSPI flash
+  SCB_InvalidateDCache_by_Addr((uint32_t*)buff, size);
+
+  if(MT25QL512ABB_ReadSTR(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, buff, address, size) != MT25QL512ABB_OK)
+  {
+    return RES_ERROR;
+  }
+
+  return RES_OK;
+  /* USER CODE END READ */
+}
+
+/**
+  * @brief  Writes Sector(s)
+  * @param  pdrv: Physical drive number (0..)
+  * @param  *buff: Data to be written
+  * @param  sector: Sector address (LBA)
+  * @param  count: Number of sectors to write (1..128)
+  * @retval DRESULT: Operation result
+  */
+#if _USE_WRITE == 1
+DRESULT USER_write (
+	BYTE pdrv,          /* Physical drive nmuber to identify the drive */
+	const BYTE *buff,   /* Data to be written */
+	DWORD sector,       /* Sector address in LBA */
+	UINT count          /* Number of sectors to write */
+)
+{
+  /* USER CODE BEGIN WRITE */
+  /* USER CODE HERE */
+  uint32_t i;
+  uint32_t address = sector * MT25QL512ABB_SUBSECTOR_4K;
+  const uint8_t *p_data = buff;
+
+  if(pdrv != 0 || count == 0)
+  {
+    return RES_PARERR;
+  }
+
+  if(Stat & STA_NOINIT)
+  {
+    return RES_NOTRDY;
+  }
+
+  for(i = 0;i < count;i++)
+  {
+    /* 1. Erase the 4KB subsector before writing */
+    if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
+      return RES_ERROR;
+    if(MT25QL512ABB_BlockErase(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, address, MT25QL512ABB_ERASE_4K) != MT25QL512ABB_OK)
+      return RES_ERROR;
+    if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
+      return RES_ERROR;
+
+    /* 2. Program the sector page by page (256 bytes chunks) */
+    for(uint32_t offset = 0;offset < MT25QL512ABB_SUBSECTOR_4K;offset += MT25QL512ABB_PAGE_SIZE)
+    {
+      if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
+        return RES_ERROR;
+      if(MT25QL512ABB_PageProgram(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, (uint8_t*) p_data, address + offset,
+          MT25QL512ABB_PAGE_SIZE) != MT25QL512ABB_OK)
+        return RES_ERROR;
+      if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
+        return RES_ERROR;
+
+      p_data += MT25QL512ABB_PAGE_SIZE;
+    }
+
+    // Invalidate D-Cache after writing to ensure the next read fetches fresh data
+    SCB_InvalidateDCache_by_Addr((uint32_t*)(buff + (i * MT25QL512ABB_SUBSECTOR_4K)), MT25QL512ABB_SUBSECTOR_4K);
+
+    address += MT25QL512ABB_SUBSECTOR_4K;
+  }
+
+  return RES_OK;
+  /* USER CODE END WRITE */
+}
+#endif /* _USE_WRITE == 1 */
+
+/**
+  * @brief  I/O control operation
+  * @param  pdrv: Physical drive number (0..)
+  * @param  cmd: Control code
+  * @param  *buff: Buffer to send/receive control data
+  * @retval DRESULT: Operation result
+  */
+#if _USE_IOCTL == 1
+DRESULT USER_ioctl (
+	BYTE pdrv,      /* Physical drive nmuber (0..) */
+	BYTE cmd,       /* Control code */
+	void *buff      /* Buffer to send/receive control data */
+)
+{
+  /* USER CODE BEGIN IOCTL */
+  if(pdrv != 0)
+  {
+    return RES_PARERR;
+  }
+
+  if(Stat & STA_NOINIT)
+  {
+    return RES_NOTRDY;
+  }
+
+  DRESULT res = RES_OK;
+
+  switch(cmd)
+  {
+  /* Make sure that no pending write process */
+  case CTRL_SYNC:
+    /* QSPI operations are blocking, so this is implicitly handled. */
+    res = RES_OK;
+    break;
+
+    /* Get number of sectors on the disk (DWORD) */
+  case GET_SECTOR_COUNT:
+    *(DWORD*) buff = QSPI_FLASH_SECTOR_COUNT;
+    break;
+
+    /* Get R/W sector size (WORD) */
+  case GET_SECTOR_SIZE:
+    *(WORD*) buff = MT25QL512ABB_SUBSECTOR_4K;
+    break;
+
+    /* Get erase block size in unit of sector (DWORD) */
+  case GET_BLOCK_SIZE:
+    *(DWORD*) buff = 1; /* Erase block size is 1 sector (4KB) */
+    break;
+
+  default:
+    res = RES_PARERR;
+    break;
+  }
+
+  return res;
+  /* USER CODE END IOCTL */
+}
+#endif /* _USE_IOCTL == 1 */
+

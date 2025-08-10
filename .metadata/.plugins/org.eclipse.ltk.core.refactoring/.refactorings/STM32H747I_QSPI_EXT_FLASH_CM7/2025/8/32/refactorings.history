@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;STM32H747I_QSPI_EXT_FLASH_CM7/Core/Inc/mt25ql512abb_conf_template.h&apos; to &apos;mt25ql512abb_conf.h&apos;" description="Rename resource &apos;mt25ql512abb_conf_template.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Core/Inc/mt25ql512abb_conf_template.h" name="mt25ql512abb_conf.h" stamp="1754711311085" updateReferences="true"/>
+</session>
