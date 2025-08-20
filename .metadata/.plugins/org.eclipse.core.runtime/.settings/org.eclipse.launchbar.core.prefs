@@ -13,6 +13,7 @@ org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:STM32H747I_RTOS_USB_QSPI_EXT_FL
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7\ Debug/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:STM32H747_FMC_CM7\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:STM32H7_QSPI_MT25QL512ABB_CM7\ Debug/activeLaunchMode=debug
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:STM32H7_QSPI_MT25QL512ABB_CM7\ Debug/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:STM32L4_HAL_CACHE\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:STM32L4_HAL_CACHE\ Debug/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:STM32L4_HAL_CACHE/activeLaunchMode=debug
