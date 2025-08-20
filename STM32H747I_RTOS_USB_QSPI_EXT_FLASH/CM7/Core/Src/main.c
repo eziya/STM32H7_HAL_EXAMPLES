@@ -26,7 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "mt25ql512abb.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,11 +59,13 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+FIL file;
+FATFS fatFS;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void MPU_Config(void);
 void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
@@ -71,6 +73,63 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+/**
+ * @brief  Initializes the QSPI interface and the MT25QL512ABB flash memory.
+ * @retval 0 on success, -1 on failure.
+ */
+int MT25QL512ABB_Init(void)
+{
+  uint8_t id[6] = {0};
+
+  /* 1. Not mandatatory, Reset memory in SPI mode (power-on default) */
+  if(MT25QL512ABB_ResetEnable(&hqspi, MT25QL512ABB_SPI_MODE) != MT25QL512ABB_OK) { return -1; }
+  if(MT25QL512ABB_ResetMemory(&hqspi, MT25QL512ABB_SPI_MODE) != MT25QL512ABB_OK) { return -1; }
+  HAL_Delay(1);
+
+  /* 2. Enter QPI mode */
+  if(MT25QL512ABB_EnterQPIMode(&hqspi) != MT25QL512ABB_OK) { return -1; }
+
+  /* 3. Read ID */
+  if(MT25QL512ABB_ReadID(&hqspi, MT25QL512ABB_QPI_MODE, id, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return -1; }
+
+#ifdef QSPI_DUAL_MODE
+  if((id[0] != 0x20) || (id[1] != 0x20) || (id[2] != 0xBA) || (id[3] != 0xBA) || (id[4] != 0x20) || (id[5] != 0x20)) { return -1; }
+#else
+  if((id[0] != 0x20) || (id[1] != 0xBA) || (id[2] != 0x20)) { return -1; }
+#endif
+
+  /* 4. Enter 4-byte address mode */
+  if(MT25QL512ABB_Enter4BytesAddressMode(&hqspi, MT25QL512ABB_QPI_MODE) != MT25QL512ABB_OK) { return -1; }
+
+  return 0;
+}
+
+/**
+ * @brief  Check filesystem and write a test file
+ * @retval 0 on success, -1 on failure.
+ */
+int FatFs_Test(void)
+{
+  FRESULT fr;
+
+  fr = f_mount(&fatFS, (TCHAR const*)USERPath, 1);
+  if (fr != FR_OK)
+  {
+    static uint8_t work[_MAX_SS];
+    if (f_mkfs((TCHAR const*)USERPath, FM_ANY, 0, work, sizeof(work)) != FR_OK) { return -1; }
+    if (f_mount(&fatFS, (TCHAR const*)USERPath, 1) != FR_OK) { return -1; }
+  }
+
+  if (f_open(&file, "FATFSOK", FA_CREATE_ALWAYS | FA_WRITE) != FR_OK) { return -1; }
+
+  f_printf(&file, "FatFS is working properly. %d\n", HAL_GetTick());
+
+  if (f_close(&file) != FR_OK) { return -1; }
+  if (f_mount(NULL, (TCHAR const*)USERPath, 0) != FR_OK) { return -1; }
+
+  return 0;
+}
 
 /* USER CODE END 0 */
 
@@ -89,6 +148,17 @@ int main(void)
   int32_t timeout;
 #endif /* DUAL_CORE_BOOT_SYNC_SEQUENCE */
 /* USER CODE END Boot_Mode_Sequence_0 */
+
+  /* MPU Configuration--------------------------------------------------------*/
+  MPU_Config();
+
+  /* Enable the CPU Cache */
+
+  /* Enable I-Cache---------------------------------------------------------*/
+  SCB_EnableICache();
+
+  /* Enable D-Cache---------------------------------------------------------*/
+  SCB_EnableDCache();
 
 /* USER CODE BEGIN Boot_Mode_Sequence_1 */
 #if defined(DUAL_CORE_BOOT_SYNC_SEQUENCE)
@@ -141,6 +211,18 @@ Error_Handler();
   MX_QUADSPI_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
+
+  /* 1. Initialize MT25QL512ABB */
+  if(MT25QL512ABB_Init() < 0 )
+  {
+    Error_Handler();
+  }
+
+  /* 2. Test FatFs with MT25QL512ABB */
+  if(FatFs_Test() < 0)
+  {
+    Error_Handler();
+  }
 
   /* USER CODE END 2 */
 
@@ -226,6 +308,49 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
+
+ /* MPU Configuration */
+
+void MPU_Config(void)
+{
+  MPU_Region_InitTypeDef MPU_InitStruct = {0};
+
+  /* Disables the MPU */
+  HAL_MPU_Disable();
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+  MPU_InitStruct.BaseAddress = 0x0;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
+  MPU_InitStruct.SubRegionDisable = 0x87;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER1;
+  MPU_InitStruct.BaseAddress = 0x24000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_512KB;
+  MPU_InitStruct.SubRegionDisable = 0x0;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  /* Enables the MPU */
+  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+
+}
 
 /**
   * @brief  Period elapsed callback in non blocking mode

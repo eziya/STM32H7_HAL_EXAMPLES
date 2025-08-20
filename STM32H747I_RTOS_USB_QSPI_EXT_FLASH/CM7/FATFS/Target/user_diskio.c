@@ -35,23 +35,22 @@
 /* Includes ------------------------------------------------------------------*/
 #include <string.h>
 #include "ff_gen_drv.h"
-#include "quadspi.h"
 #include "mt25ql512abb.h"
-
+#include "quadspi.h"
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 
 #define _USE_IOCTL  1
-
-// STM32H747I-DISCO has two 64MB flash chips = 128MB total
-#define QSPI_FLASH_TOTAL_SIZE      (MT25QL512ABB_FLASH_SIZE * 2)  /* 128 MBytes */
-#define QSPI_FLASH_SECTOR_COUNT    (QSPI_FLASH_TOTAL_SIZE / MT25QL512ABB_SUBSECTOR_4K)
 
 /* Private variables ---------------------------------------------------------*/
 /* Disk status */
 static volatile DSTATUS Stat = STA_NOINIT;
 extern QSPI_HandleTypeDef hqspi;
 
+static inline uint32_t fatfs_sector_to_addr(DWORD sector)
+{
+  return (uint32_t) sector * _MIN_SS;
+}
 /* USER CODE END DECL */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -90,44 +89,11 @@ DSTATUS USER_initialize (
 )
 {
   /* USER CODE BEGIN INIT */
-  uint8_t id[6];
+  if(pdrv != 0) { return STA_NOINIT; }
+  if((Stat & STA_NOINIT) == 0) { return Stat; }
 
-  /* We only support drive 0 */
-  if(pdrv != 0)
-  {
-    return STA_NOINIT;
-  }
+  /* QSPI external flash was initialized at main */
 
-  /* Check if already initialized */
-  if((Stat & STA_NOINIT) == 0)
-  {
-    return Stat;
-  }
-
-  /* 1. Enter QPI mode */
-  if(MT25QL512ABB_EnterQPIMode(&hqspi) != MT25QL512ABB_OK)
-  {
-    return STA_NOINIT;
-  }
-
-  /* 2. Read ID and verify */
-  if(MT25QL512ABB_ReadID(&hqspi, MT25QL512ABB_QPI_MODE, id, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
-  {
-    return STA_NOINIT;
-  }
-
-  if((id[0] != 0x20) || (id[1] != 0x20) || (id[2] != 0xBA) || (id[3] != 0xBA) || (id[4] != 0x20) || (id[5] != 0x20))
-  {
-    return STA_NOINIT;
-  }
-
-  /* 3. Enter 4-byte address mode */
-  if(MT25QL512ABB_Enter4BytesAddressMode(&hqspi, MT25QL512ABB_QPI_MODE) != MT25QL512ABB_OK)
-  {
-    return STA_NOINIT;
-  }
-
-  /* Initialization successful */
   Stat &= ~STA_NOINIT;
   return Stat;
   /* USER CODE END INIT */
@@ -143,29 +109,21 @@ DSTATUS USER_status (
 )
 {
   /* USER CODE BEGIN STATUS */
+  if(pdrv != 0) { return STA_NOINIT; }
+  if(Stat & STA_NOINIT) { return Stat; }
 
-  if (pdrv != 0)
-  {
-    return STA_NOINIT; // We only support drive 0
-  }
-
-  if (Stat & STA_NOINIT)
-  {
-    return Stat; // Return immediately if the drive was never initialized
-  }
-
-  uint8_t reg[2]; // Buffer for status register value (2 bytes for Dual-Flash)
-
-  if (MT25QL512ABB_ReadStatusRegister(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE, reg) != MT25QL512ABB_OK)
+  uint8_t sr[2] = {0};
+  if (MT25QL512ABB_ReadStatusRegister(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE, sr) != MT25QL512ABB_OK)
   {
     Stat |= STA_NOINIT;
     return Stat;
   }
 
-  if ((reg[0] & MT25QL512ABB_SR_WIP) || (reg[1] & MT25QL512ABB_SR_WIP))
-  {
-    return STA_PROTECT;
-  }
+#ifdef QSPI_DUAL_MODE
+  if ((sr[0] & MT25QL512ABB_SR_WIP) || (sr[1] & MT25QL512ABB_SR_WIP)) return STA_PROTECT;
+#else
+  if (sr[0] & MT25QL512ABB_SR_WIP) return STA_PROTECT;
+#endif
 
   return 0;
   /* USER CODE END STATUS */
@@ -187,26 +145,17 @@ DRESULT USER_read (
 )
 {
   /* USER CODE BEGIN READ */
-  uint32_t address = sector * MT25QL512ABB_SUBSECTOR_4K;
-  uint32_t size = count * MT25QL512ABB_SUBSECTOR_4K;
+  if (pdrv != 0 || count == 0) { return RES_PARERR; }
+  if (Stat & STA_NOINIT) { return RES_NOTRDY; }
 
-  if(pdrv != 0 || count == 0)
-  {
-    return RES_PARERR;
-  }
+  uint32_t addr = fatfs_sector_to_addr(sector);
+  uint32_t size = (uint32_t)count * _MIN_SS;
 
-  if(Stat & STA_NOINIT)
-  {
-    return RES_NOTRDY;
-  }
-
-  // Invalidate D-Cache before reading to get fresh data from QSPI flash
+  /* Optional, if you don't use D-Cache, remove this line */
   SCB_InvalidateDCache_by_Addr((uint32_t*)buff, size);
 
-  if(MT25QL512ABB_ReadSTR(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, buff, address, size) != MT25QL512ABB_OK)
-  {
-    return RES_ERROR;
-  }
+  /* Read data from qspi device */
+  if (qspi_read(buff, addr, size) != HAL_OK) { return RES_ERROR; }
 
   return RES_OK;
   /* USER CODE END READ */
@@ -230,51 +179,22 @@ DRESULT USER_write (
 {
   /* USER CODE BEGIN WRITE */
   /* USER CODE HERE */
-  uint32_t i;
-  uint32_t address = sector * MT25QL512ABB_SUBSECTOR_4K;
-  const uint8_t *p_data = buff;
+  if(pdrv != 0 || count == 0) { return RES_PARERR; }
+  if(Stat & STA_NOINIT) { return RES_NOTRDY; }
 
-  if(pdrv != 0 || count == 0)
+  uint32_t write_addr = fatfs_sector_to_addr(sector);
+  uint32_t size = (uint32_t) count * _MIN_SS;
+
+  if (qspi_flash_write_data(write_addr, buff, size) == HAL_OK)
   {
-    return RES_PARERR;
+    HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_SET);
+    return RES_OK;
   }
-
-  if(Stat & STA_NOINIT)
+  else
   {
-    return RES_NOTRDY;
+    HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_SET);
+    return RES_ERROR;
   }
-
-  for(i = 0;i < count;i++)
-  {
-    /* 1. Erase the 4KB subsector before writing */
-    if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
-      return RES_ERROR;
-    if(MT25QL512ABB_BlockErase(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, address, MT25QL512ABB_ERASE_4K) != MT25QL512ABB_OK)
-      return RES_ERROR;
-    if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
-      return RES_ERROR;
-
-    /* 2. Program the sector page by page (256 bytes chunks) */
-    for(uint32_t offset = 0;offset < MT25QL512ABB_SUBSECTOR_4K;offset += MT25QL512ABB_PAGE_SIZE)
-    {
-      if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
-        return RES_ERROR;
-      if(MT25QL512ABB_PageProgram(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, (uint8_t*) p_data, address + offset,
-          MT25QL512ABB_PAGE_SIZE) != MT25QL512ABB_OK)
-        return RES_ERROR;
-      if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
-        return RES_ERROR;
-
-      p_data += MT25QL512ABB_PAGE_SIZE;
-    }
-
-    // Invalidate D-Cache after writing to ensure the next read fetches fresh data
-    SCB_InvalidateDCache_by_Addr((uint32_t*)(buff + (i * MT25QL512ABB_SUBSECTOR_4K)), MT25QL512ABB_SUBSECTOR_4K);
-
-    address += MT25QL512ABB_SUBSECTOR_4K;
-  }
-
-  return RES_OK;
   /* USER CODE END WRITE */
 }
 #endif /* _USE_WRITE == 1 */
@@ -294,47 +214,33 @@ DRESULT USER_ioctl (
 )
 {
   /* USER CODE BEGIN IOCTL */
-  if(pdrv != 0)
-  {
-    return RES_PARERR;
-  }
-
-  if(Stat & STA_NOINIT)
-  {
-    return RES_NOTRDY;
-  }
-
-  DRESULT res = RES_OK;
+  if(pdrv != 0) { return RES_PARERR; }
+  if(Stat & STA_NOINIT) { return RES_NOTRDY; }
 
   switch(cmd)
   {
-  /* Make sure that no pending write process */
   case CTRL_SYNC:
-    /* QSPI operations are blocking, so this is implicitly handled. */
-    res = RES_OK;
-    break;
+    /* All QSPI API calls are blocking and guarantee completion. */
+    return RES_OK;
 
-    /* Get number of sectors on the disk (DWORD) */
   case GET_SECTOR_COUNT:
-    *(DWORD*) buff = QSPI_FLASH_SECTOR_COUNT;
-    break;
+    /* Total capacity (in bytes) / Sector size (in bytes) */
+    *(DWORD*) buff = (DWORD) (QSPI_FLASH_SIZE / _MIN_SS);
+    return RES_OK;
 
-    /* Get R/W sector size (WORD) */
   case GET_SECTOR_SIZE:
-    *(WORD*) buff = MT25QL512ABB_SUBSECTOR_4K;
-    break;
+    *(WORD*) buff = (WORD) _MIN_SS; /* FatFs sector size */
+    return RES_OK;
 
-    /* Get erase block size in unit of sector (DWORD) */
   case GET_BLOCK_SIZE:
-    *(DWORD*) buff = 1; /* Erase block size is 1 sector (4KB) */
-    break;
+    /* Erase block size in unit of sector (e.g., 8KB / 512 bytes) */
+    *(DWORD*) buff = (DWORD) (QSPI_SUBSECTOR_SIZE / _MIN_SS);
+    return RES_OK;
 
   default:
-    res = RES_PARERR;
-    break;
+    return RES_PARERR;
   }
 
-  return res;
   /* USER CODE END IOCTL */
 }
 #endif /* _USE_IOCTL == 1 */

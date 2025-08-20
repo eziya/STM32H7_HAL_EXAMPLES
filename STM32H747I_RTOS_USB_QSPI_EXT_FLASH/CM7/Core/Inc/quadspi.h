@@ -41,7 +41,10 @@ extern QSPI_HandleTypeDef hqspi;
 void MX_QUADSPI_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+HAL_StatusTypeDef qspi_read(uint8_t *dst, uint32_t addr, uint32_t size);
+HAL_StatusTypeDef qspi_block_erase(uint32_t block_addr);
+HAL_StatusTypeDef qspi_page_program(const uint8_t *src, uint32_t addr, uint32_t size);
+HAL_StatusTypeDef qspi_flash_write_data(uint32_t addr, const uint8_t *data, uint32_t size);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

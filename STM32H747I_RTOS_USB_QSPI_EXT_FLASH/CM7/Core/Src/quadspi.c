@@ -21,7 +21,8 @@
 #include "quadspi.h"
 
 /* USER CODE BEGIN 0 */
-
+#include <string.h>
+#include "mt25ql512abb.h"
 /* USER CODE END 0 */
 
 QSPI_HandleTypeDef hqspi;
@@ -39,10 +40,10 @@ void MX_QUADSPI_Init(void)
   /* USER CODE END QUADSPI_Init 1 */
   hqspi.Instance = QUADSPI;
   hqspi.Init.ClockPrescaler = 1;
-  hqspi.Init.FifoThreshold = 1;
+  hqspi.Init.FifoThreshold = 4;
   hqspi.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_HALFCYCLE;
   hqspi.Init.FlashSize = 26;
-  hqspi.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_5_CYCLE;
+  hqspi.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_3_CYCLE;
   hqspi.Init.ClockMode = QSPI_CLOCK_MODE_0;
   hqspi.Init.DualFlash = QSPI_DUALFLASH_ENABLE;
   if (HAL_QSPI_Init(&hqspi) != HAL_OK)
@@ -190,5 +191,112 @@ void HAL_QSPI_MspDeInit(QSPI_HandleTypeDef* qspiHandle)
 }
 
 /* USER CODE BEGIN 1 */
+/**
+ * @brief  Reads a block of data from the QSPI flash memory.
+ * @param  dst: Pointer to the destination buffer to store the read data.
+ * @param  addr: The starting physical address to read from.
+ * @param  size: The number of bytes to read.
+ * @retval HAL_StatusTypeDef: HAL_OK on success, or an error status.
+ */
+HAL_StatusTypeDef qspi_read(uint8_t *dst, uint32_t addr, uint32_t size)
+{
+  return MT25QL512ABB_ReadSTR(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, dst, addr, size);
+}
 
+/**
+ * @brief  Erases a 4KB/8KB(Dual Mode) subsector of the QSPI flash memory.
+ * @param  block_addr: The starting address of the 4KB/8KB(Dual Mode) block to be erased.
+ * @retval HAL_StatusTypeDef: HAL_OK on success, HAL_ERROR on failure.
+ */
+HAL_StatusTypeDef qspi_block_erase(uint32_t block_addr)
+{
+  if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return HAL_ERROR; }
+  if(MT25QL512ABB_BlockErase(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, block_addr, MT25QL512ABB_ERASE_4K) != MT25QL512ABB_OK) { return HAL_ERROR; }
+  if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return HAL_ERROR; }
+
+  return HAL_OK;
+}
+
+/**
+ * @brief  Writes a page of data to the QSPI flash memory.
+ * @param  src: Pointer to the source data buffer to be written.
+ * @param  addr: The starting physical address to write to.
+ * @param  size: The number of bytes to write (up to a page size).
+ * @retval HAL_StatusTypeDef: HAL_OK on success, HAL_ERROR on failure.
+ */
+HAL_StatusTypeDef qspi_page_program(const uint8_t *src, uint32_t addr, uint32_t size)
+{
+  if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return HAL_ERROR; }
+  if(MT25QL512ABB_PageProgram(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, (uint8_t*) src, addr, size) != MT25QL512ABB_OK) { return HAL_ERROR; }
+  if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return HAL_ERROR; }
+
+  return HAL_OK;
+}
+
+/**
+ * @brief  Writes data to the QSPI flash with read-compare-erase-write logic.
+ * @param  addr: The starting physical address to write to.
+ * @param  data: Pointer to the data buffer to be written.
+ * @param  size: The size of the data in bytes.
+ * @retval HAL_StatusTypeDef: HAL_OK or HAL_ERROR.
+ */
+HAL_StatusTypeDef qspi_flash_write_data(uint32_t addr, const uint8_t *data, uint32_t size)
+{
+  uint32_t write_addr = addr;
+  uint32_t remaining_bytes = size;
+  const uint8_t *src = data;
+  uint8_t work[QSPI_SUBSECTOR_SIZE];
+
+  while (remaining_bytes > 0)
+  {
+    uint32_t offset = write_addr % QSPI_SUBSECTOR_SIZE;
+    uint32_t block_addr = write_addr - offset;
+    uint32_t chunk = QSPI_SUBSECTOR_SIZE - offset;
+
+    /*
+     * |<-------------- QSPI_SUBSECTOR_SIZE (e.g., 8KB) -------------->|
+     * +---------------------------------------------------------------+
+     * | Unchanged Data |         Data to Write
+     * |                |<----------- chunk -------------------------->|
+     * +---------------------------------------------------------------+
+     * ^                ^
+     * |                |
+     * block_addr       write_addr
+     * |<--- offset --->|
+     */
+
+    if (chunk > remaining_bytes)
+    {
+      chunk = remaining_bytes;
+    }
+
+    if (qspi_read(work, block_addr, QSPI_SUBSECTOR_SIZE) != HAL_OK) { return HAL_ERROR; }
+
+    if (memcmp(&work[offset], src, chunk) == 0)
+    {
+      write_addr += chunk;
+      src += chunk;
+      remaining_bytes -= chunk;
+      continue;
+    }
+
+    memcpy(&work[offset], src, chunk);
+    SCB_CleanDCache_by_Addr((uint32_t*)work, QSPI_SUBSECTOR_SIZE);
+
+    if (qspi_block_erase(block_addr) != HAL_OK) { return HAL_ERROR; }
+
+    for (uint32_t off = 0; off < QSPI_SUBSECTOR_SIZE; off += QSPI_PAGE_SIZE)
+    {
+      if (qspi_page_program(&work[off], block_addr + off, QSPI_PAGE_SIZE) != HAL_OK) { return HAL_ERROR; }
+    }
+
+    write_addr += chunk;
+    src += chunk;
+    remaining_bytes -= chunk;
+
+    HAL_GPIO_TogglePin(LED4_GPIO_Port, LED4_Pin);
+  }
+
+  return HAL_OK;
+}
 /* USER CODE END 1 */

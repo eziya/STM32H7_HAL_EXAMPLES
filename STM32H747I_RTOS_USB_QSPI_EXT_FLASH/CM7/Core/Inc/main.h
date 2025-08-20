@@ -67,7 +67,23 @@ void Error_Handler(void);
 #define LED4_GPIO_Port GPIOI
 
 /* USER CODE BEGIN Private defines */
+#define QSPI_DUAL_MODE
 
+#ifdef QSPI_DUAL_MODE
+#define QSPI_FLASH_SIZE         (0x8000000) /* 128 MB (2 * 512Mbit) */
+#define QSPI_SECTOR_SIZE        (0x20000)   /* 128 KB (2 * 64KB) */
+#define QSPI_SUBSECTOR_SIZE     (0x2000)    /* 8 KB (2 * 4KB) */
+#define QSPI_PAGE_SIZE          (512)       /* 512 Bytes (2 * 256B) */
+#define QSPI_DUAL_FLASH_MODE    MT25QL512ABB_DUALFLASH_ENABLE
+#else
+#define QSPI_FLASH_SIZE         (0x4000000) /* 64 MB (1 * 512Mbit) */
+#define QSPI_SECTOR_SIZE        (0x10000)   /* 64 KB */
+#define QSPI_SUBSECTOR_SIZE     (0x1000)    /* 4 KB */
+#define QSPI_PAGE_SIZE          (256)       /* 256 Bytes */
+#define QSPI_DUAL_FLASH_MODE    MT25QL512ABB_DUALFLASH_DISABLE
+#endif
+
+#define QSPI_NUM_SECTORS        (QSPI_FLASH_SIZE / QSPI_SECTOR_SIZE)
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

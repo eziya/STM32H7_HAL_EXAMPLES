@@ -47,8 +47,6 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-FIL file;
-FATFS fatFS;
 extern USBD_HandleTypeDef hUsbDeviceHS;
 
 /* USER CODE END Variables */
@@ -152,61 +150,13 @@ void StartDefaultTask(void *argument)
   /* init code for USB_DEVICE */
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN StartDefaultTask */
-  FRESULT fr = FR_DISK_ERR;
-
-  // 1. get mutex first before access flash memory
-  osMutexWait(qspiMutexHandle, osWaitForever);
-
-  // 2. mount file system
-  fr = f_mount(&fatFS, (TCHAR const*) USERPath, 1);
-  if(fr != FR_OK)
-  {
-    uint8_t work[_MIN_SS];
-    fr = f_mkfs((TCHAR const*)USERPath, FM_ANY, 0, work, sizeof(work));
-    if( fr != FR_OK)
-    {
-      Error_Handler();
-    }
-    else
-    {
-      fr = f_mount(&fatFS, (TCHAR const*) USERPath, 1);
-      if( fr != FR_OK)
-      {
-        Error_Handler();
-      }
-    }
-  }
-
-  // 3. file open test
-  fr = f_open(&file, "FATFSOK", FA_CREATE_NEW | FA_WRITE);
-  if(fr == FR_OK || fr == FR_EXIST)
-  {
-    f_printf(&file, "FatFS is working properly.%d\n",HAL_GetTick());
-    f_close(&file);
-  }
-  else
-  {
-    Error_Handler();
-  }
-
-  // 4. unmount file system
-  fr = f_mount(NULL, "", 0);
-  if( fr != FR_OK)
-  {
-    Error_Handler();
-  }
-
-  // 5. release mutex
-  osMutexRelease(qspiMutexHandle);
-
-  MX_USB_DEVICE_Init();
 
   /* Infinite loop */
   for(;;)
   {
     // add your code here
     HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-    osDelay(100);
+    osDelay(500);
   }
   /* USER CODE END StartDefaultTask */
 }

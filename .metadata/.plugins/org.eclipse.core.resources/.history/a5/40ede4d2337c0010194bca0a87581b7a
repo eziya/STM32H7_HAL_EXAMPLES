@@ -1,0 +1,344 @@
+/* USER CODE BEGIN Header */
+/**
+ ******************************************************************************
+ * @file    user_diskio.c
+ * @brief   This file includes a diskio driver skeleton to be completed by the user.
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2025 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
+ /* USER CODE END Header */
+
+#ifdef USE_OBSOLETE_USER_CODE_SECTION_0
+/*
+ * Warning: the user section 0 is no more in use (starting from CubeMx version 4.16.0)
+ * To be suppressed in the future.
+ * Kept to ensure backward compatibility with previous CubeMx versions when
+ * migrating projects.
+ * User code previously added there should be copied in the new user sections before
+ * the section contents can be deleted.
+ */
+/* USER CODE BEGIN 0 */
+/* USER CODE END 0 */
+#endif
+
+/* USER CODE BEGIN DECL */
+
+/* Includes ------------------------------------------------------------------*/
+#include <string.h>
+#include "ff_gen_drv.h"
+#include "mt25ql512abb.h"
+
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+
+#define _USE_IOCTL  1
+
+/* Private variables ---------------------------------------------------------*/
+/* Disk status */
+static volatile DSTATUS Stat = STA_NOINIT;
+extern QSPI_HandleTypeDef hqspi;
+
+static inline uint32_t fatfs_sector_to_addr(DWORD sector)
+{
+  /* FatFs의 sector는 _MIN_SS(바이트) 단위입니다. */
+  return (uint32_t) sector * _MIN_SS;
+}
+
+static HAL_StatusTypeDef qspi_read(uint8_t *dst, uint32_t addr, uint32_t size)
+{
+  return MT25QL512ABB_ReadSTR(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, dst, addr, size);
+}
+
+static HAL_StatusTypeDef qspi_block_erase_8k(uint32_t block_addr)
+{
+  /* 듀얼 모드에서 실질 최소 erase 단위는 8KB (QSPI_SUBSECTOR_SIZE) */
+  if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK)
+    return HAL_ERROR;
+
+  /* 라이브러리 상수가 4K 이름을 쓰더라도 듀얼 모드에서는 결과적으로 8KB가 지워집니다.
+   드라이버에 8K 전용 enum이 있다면 그걸로 바꿔주세요. */
+  if(MT25QL512ABB_BlockErase(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, block_addr, MT25QL512ABB_ERASE_4K) != MT25QL512ABB_OK)
+    return HAL_ERROR;
+
+  if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK)
+    return HAL_ERROR;
+
+  return HAL_OK;
+}
+
+static HAL_StatusTypeDef qspi_page_program(const uint8_t *src, uint32_t addr, uint32_t size)
+{
+  /* size는 QSPI_PAGE_SIZE(512B) 배수로 호출 */
+  if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK)
+    return HAL_ERROR;
+
+  if(MT25QL512ABB_PageProgram(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, (uint8_t*) src, addr, size) != MT25QL512ABB_OK)
+    return HAL_ERROR;
+
+  if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK)
+    return HAL_ERROR;
+
+  return HAL_OK;
+}
+
+/* USER CODE END DECL */
+
+/* Private function prototypes -----------------------------------------------*/
+DSTATUS USER_initialize (BYTE pdrv);
+DSTATUS USER_status (BYTE pdrv);
+DRESULT USER_read (BYTE pdrv, BYTE *buff, DWORD sector, UINT count);
+#if _USE_WRITE == 1
+  DRESULT USER_write (BYTE pdrv, const BYTE *buff, DWORD sector, UINT count);
+#endif /* _USE_WRITE == 1 */
+#if _USE_IOCTL == 1
+  DRESULT USER_ioctl (BYTE pdrv, BYTE cmd, void *buff);
+#endif /* _USE_IOCTL == 1 */
+
+Diskio_drvTypeDef  USER_Driver =
+{
+  USER_initialize,
+  USER_status,
+  USER_read,
+#if  _USE_WRITE
+  USER_write,
+#endif  /* _USE_WRITE == 1 */
+#if  _USE_IOCTL == 1
+  USER_ioctl,
+#endif /* _USE_IOCTL == 1 */
+};
+
+/* Private functions ---------------------------------------------------------*/
+
+/**
+  * @brief  Initializes a Drive
+  * @param  pdrv: Physical drive number (0..)
+  * @retval DSTATUS: Operation status
+  */
+DSTATUS USER_initialize (
+	BYTE pdrv           /* Physical drive nmuber to identify the drive */
+)
+{
+  /* USER CODE BEGIN INIT */
+
+  /* We only support drive 0 */
+  if(pdrv != 0)
+  {
+    return STA_NOINIT;
+  }
+
+  /* Check if already initialized */
+  if((Stat & STA_NOINIT) == 0)
+  {
+    return Stat;
+  }
+
+  /* initialize the QSPI external flash at main */
+
+  /* Initialization successful */
+  Stat &= ~STA_NOINIT;
+  return Stat;
+  /* USER CODE END INIT */
+}
+
+/**
+  * @brief  Gets Disk Status
+  * @param  pdrv: Physical drive number (0..)
+  * @retval DSTATUS: Operation status
+  */
+DSTATUS USER_status (
+	BYTE pdrv       /* Physical drive number to identify the drive */
+)
+{
+  /* USER CODE BEGIN STATUS */
+
+  if(pdrv != 0)
+  {
+    return STA_NOINIT; // We only support drive 0
+  }
+
+  if(Stat & STA_NOINIT)
+  {
+    return Stat; // Return immediately if the drive was never initialized
+  }
+
+  uint8_t sr[2] = {0};
+  if (MT25QL512ABB_ReadStatusRegister(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE, sr) != MT25QL512ABB_OK)
+  {
+    Stat |= STA_NOINIT;
+    return Stat;
+  }
+
+  if ((sr[0] & MT25QL512ABB_SR_WIP) || (sr[1] & MT25QL512ABB_SR_WIP)) return STA_PROTECT;
+
+  return 0;
+  /* USER CODE END STATUS */
+}
+
+/**
+  * @brief  Reads Sector(s)
+  * @param  pdrv: Physical drive number (0..)
+  * @param  *buff: Data buffer to store read data
+  * @param  sector: Sector address (LBA)
+  * @param  count: Number of sectors to read (1..128)
+  * @retval DRESULT: Operation result
+  */
+DRESULT USER_read (
+	BYTE pdrv,      /* Physical drive nmuber to identify the drive */
+	BYTE *buff,     /* Data buffer to store read data */
+	DWORD sector,   /* Sector address in LBA */
+	UINT count      /* Number of sectors to read */
+)
+{
+  /* USER CODE BEGIN READ */
+  if (pdrv != 0 || count == 0)
+    return RES_PARERR;
+  if (Stat & STA_NOINIT)
+    return RES_NOTRDY;
+
+  uint32_t addr = fatfs_sector_to_addr(sector);
+  uint32_t size = (uint32_t)count * _MIN_SS;
+
+  /* 외부로부터 버퍼에 채워질 예정이므로 invalidate 권장(간접모드/메모리맵 방식에 따라 필요성 상이) */
+  SCB_InvalidateDCache_by_Addr((uint32_t*)buff, size);
+
+  if (qspi_read(buff, addr, size) != HAL_OK)
+    return RES_ERROR;
+
+  return RES_OK;
+  /* USER CODE END READ */
+}
+
+/**
+  * @brief  Writes Sector(s)
+  * @param  pdrv: Physical drive number (0..)
+  * @param  *buff: Data to be written
+  * @param  sector: Sector address (LBA)
+  * @param  count: Number of sectors to write (1..128)
+  * @retval DRESULT: Operation result
+  */
+#if _USE_WRITE == 1
+DRESULT USER_write (
+	BYTE pdrv,          /* Physical drive nmuber to identify the drive */
+	const BYTE *buff,   /* Data to be written */
+	DWORD sector,       /* Sector address in LBA */
+	UINT count          /* Number of sectors to write */
+)
+{
+  /* USER CODE BEGIN WRITE */
+  /* USER CODE HERE */
+
+  if(pdrv != 0 || count == 0)
+    return RES_PARERR;
+  if(Stat & STA_NOINIT)
+    return RES_NOTRDY;
+
+  uint32_t write_addr = fatfs_sector_to_addr(sector);
+  uint32_t remaining_bytes = (uint32_t) count * _MIN_SS;
+
+  /* 8KB 워크버퍼 (듀얼 모드 최소 erase 단위) */
+  uint8_t work[QSPI_SUBSECTOR_SIZE];
+
+  while(remaining_bytes > 0)
+  {
+    /* 현재 주소가 속한 8KB 블록의 시작 주소 */
+    uint32_t block_addr = write_addr & ~(QSPI_SUBSECTOR_SIZE - 1U);
+    uint32_t offset_inblk = write_addr - block_addr;
+    uint32_t chunk = QSPI_SUBSECTOR_SIZE - offset_inblk; /* 이번 블록에서 덮어쓸 크기 */
+    if(chunk > remaining_bytes)
+      chunk = remaining_bytes;
+
+    /* 1) 블록 전체를 읽어와 워크버퍼에 보관 */
+    if(qspi_read(work, block_addr, QSPI_SUBSECTOR_SIZE) != HAL_OK)
+      return RES_ERROR;
+
+    /* 2) 바뀔 부분만 워크버퍼 갱신 */
+    memcpy(&work[offset_inblk], buff, chunk);
+
+    /* (선택) 변경 없으면 스킵 → 간단한 최적화 */
+    if(memcmp(&work[offset_inblk], buff, chunk) == 0)
+    {
+      /* 동일하면 erase/program 생략 가능 — 여기서는 항상 진행하도록 주석처리 */
+    }
+
+    SCB_CleanDCache_by_Addr((uint32_t*)work, QSPI_SUBSECTOR_SIZE);
+
+    /* 3) 블록 erase (8KB) */
+    if(qspi_block_erase_8k(block_addr) != HAL_OK)
+      return RES_ERROR;
+
+    /* 4) 페이지(512B) 단위로 블록 전체(8KB) 프로그램
+     - 부분만 쓰는 최적화도 가능하지만, 정합성/단순성을 위해 전체 재기록 */
+    for(uint32_t off = 0;off < QSPI_SUBSECTOR_SIZE;off += QSPI_PAGE_SIZE)
+    {
+      if(qspi_page_program(&work[off], block_addr + off, QSPI_PAGE_SIZE) != HAL_OK)
+        return RES_ERROR;
+    }
+
+    /* 다음 처리로 이동 */
+    write_addr += chunk;
+    buff += chunk;
+    remaining_bytes -= chunk;
+  }
+
+  return RES_OK;
+  /* USER CODE END WRITE */
+}
+#endif /* _USE_WRITE == 1 */
+
+/**
+  * @brief  I/O control operation
+  * @param  pdrv: Physical drive number (0..)
+  * @param  cmd: Control code
+  * @param  *buff: Buffer to send/receive control data
+  * @retval DRESULT: Operation result
+  */
+#if _USE_IOCTL == 1
+DRESULT USER_ioctl (
+	BYTE pdrv,      /* Physical drive nmuber (0..) */
+	BYTE cmd,       /* Control code */
+	void *buff      /* Buffer to send/receive control data */
+)
+{
+  /* USER CODE BEGIN IOCTL */
+  if(pdrv != 0)
+    return RES_PARERR;
+  if(Stat & STA_NOINIT)
+    return RES_NOTRDY;
+
+  switch(cmd)
+  {
+  case CTRL_SYNC:
+    /* 모든 QSPI API 호출은 블로킹으로 완료를 보장합니다. */
+    return RES_OK;
+
+  case GET_SECTOR_COUNT:
+    /* 전체 용량(바이트) / 섹터 크기(바이트) */
+    *(DWORD*) buff = (DWORD) (QSPI_FLASH_SIZE / _MIN_SS);
+    return RES_OK;
+
+  case GET_SECTOR_SIZE:
+    *(WORD*) buff = (WORD) _MIN_SS; /* FatFs 섹터 크기 */
+    return RES_OK;
+
+  case GET_BLOCK_SIZE:
+    /*  (2 * 4KB) / _MIN_SS */
+    *(DWORD*) buff = (DWORD) (QSPI_SUBSECTOR_SIZE / _MIN_SS);
+    return RES_OK;
+
+  default:
+    return RES_PARERR;
+  }
+
+  /* USER CODE END IOCTL */
+}
+#endif /* _USE_IOCTL == 1 */
+

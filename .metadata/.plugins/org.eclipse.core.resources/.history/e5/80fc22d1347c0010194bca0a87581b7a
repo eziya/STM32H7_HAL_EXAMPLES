@@ -1,0 +1,334 @@
+/* USER CODE BEGIN Header */
+/**
+ ******************************************************************************
+ * @file    user_diskio.c
+ * @brief   This file includes a diskio driver skeleton to be completed by the user.
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2025 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
+/* USER CODE END Header */
+
+#ifdef USE_OBSOLETE_USER_CODE_SECTION_0
+/*
+ * Warning: the user section 0 is no more in use (starting from CubeMx version 4.16.0)
+ * To be suppressed in the future.
+ * Kept to ensure backward compatibility with previous CubeMx versions when
+ * migrating projects.
+ * User code previously added there should be copied in the new user sections before
+ * the section contents can be deleted.
+ */
+/* USER CODE BEGIN 0 */
+/* USER CODE END 0 */
+#endif
+
+/* USER CODE BEGIN DECL */
+
+/* Includes ------------------------------------------------------------------*/
+#include <string.h>
+#include "ff_gen_drv.h"
+#include "mt25ql512abb.h"
+
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+
+#define _USE_IOCTL  1
+
+/* Private variables ---------------------------------------------------------*/
+/* Disk status */
+static volatile DSTATUS Stat = STA_NOINIT;
+extern QSPI_HandleTypeDef hqspi;
+
+static inline uint32_t fatfs_sector_to_addr(DWORD sector)
+{
+  return (uint32_t) sector * _MIN_SS;
+}
+
+static HAL_StatusTypeDef qspi_read(uint8_t *dst, uint32_t addr, uint32_t size)
+{
+  return MT25QL512ABB_ReadSTR(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, dst, addr, size);
+}
+
+static HAL_StatusTypeDef qspi_block_erase(uint32_t block_addr)
+{
+  if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return HAL_ERROR; }
+  if(MT25QL512ABB_BlockErase(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, block_addr, MT25QL512ABB_ERASE_4K) != MT25QL512ABB_OK) { return HAL_ERROR; }
+  if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return HAL_ERROR; }
+
+  return HAL_OK;
+}
+
+static HAL_StatusTypeDef qspi_page_program(const uint8_t *src, uint32_t addr, uint32_t size)
+{
+  if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return HAL_ERROR; }
+  if(MT25QL512ABB_PageProgram(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, (uint8_t*) src, addr, size) != MT25QL512ABB_OK) { return HAL_ERROR; }
+  if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return HAL_ERROR; }
+
+  return HAL_OK;
+}
+/* USER CODE END DECL */
+
+/* Private function prototypes -----------------------------------------------*/
+DSTATUS USER_initialize (BYTE pdrv);
+DSTATUS USER_status (BYTE pdrv);
+DRESULT USER_read (BYTE pdrv, BYTE *buff, DWORD sector, UINT count);
+#if _USE_WRITE == 1
+DRESULT USER_write (BYTE pdrv, const BYTE *buff, DWORD sector, UINT count);
+#endif /* _USE_WRITE == 1 */
+#if _USE_IOCTL == 1
+DRESULT USER_ioctl (BYTE pdrv, BYTE cmd, void *buff);
+#endif /* _USE_IOCTL == 1 */
+
+Diskio_drvTypeDef  USER_Driver =
+{
+    USER_initialize,
+    USER_status,
+    USER_read,
+#if  _USE_WRITE
+    USER_write,
+#endif  /* _USE_WRITE == 1 */
+#if  _USE_IOCTL == 1
+    USER_ioctl,
+#endif /* _USE_IOCTL == 1 */
+};
+
+/* Private functions ---------------------------------------------------------*/
+
+/**
+ * @brief  Initializes a Drive
+ * @param  pdrv: Physical drive number (0..)
+ * @retval DSTATUS: Operation status
+ */
+DSTATUS USER_initialize (
+    BYTE pdrv           /* Physical drive nmuber to identify the drive */
+)
+{
+  /* USER CODE BEGIN INIT */
+  if(pdrv != 0) { return STA_NOINIT; }
+  if((Stat & STA_NOINIT) == 0) { return Stat; }
+
+  /* QSPI external flash was initialized at main */
+
+  Stat &= ~STA_NOINIT;
+  return Stat;
+  /* USER CODE END INIT */
+}
+
+/**
+ * @brief  Gets Disk Status
+ * @param  pdrv: Physical drive number (0..)
+ * @retval DSTATUS: Operation status
+ */
+DSTATUS USER_status (
+    BYTE pdrv       /* Physical drive number to identify the drive */
+)
+{
+  /* USER CODE BEGIN STATUS */
+  if(pdrv != 0) { return STA_NOINIT; }
+  if(Stat & STA_NOINIT) { return Stat; }
+
+  uint8_t sr[2] = {0};
+  if (MT25QL512ABB_ReadStatusRegister(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE, sr) != MT25QL512ABB_OK)
+  {
+    Stat |= STA_NOINIT;
+    return Stat;
+  }
+
+#ifdef QSPI_DUAL_MODE
+  if ((sr[0] & MT25QL512ABB_SR_WIP) || (sr[1] & MT25QL512ABB_SR_WIP)) return STA_PROTECT;
+#else
+  if (sr[0] & MT25QL512ABB_SR_WIP) return STA_PROTECT;
+#endif
+  return 0;
+  /* USER CODE END STATUS */
+}
+
+/**
+ * @brief  Reads Sector(s)
+ * @param  pdrv: Physical drive number (0..)
+ * @param  *buff: Data buffer to store read data
+ * @param  sector: Sector address (LBA)
+ * @param  count: Number of sectors to read (1..128)
+ * @retval DRESULT: Operation result
+ */
+DRESULT USER_read (
+    BYTE pdrv,      /* Physical drive nmuber to identify the drive */
+    BYTE *buff,     /* Data buffer to store read data */
+    DWORD sector,   /* Sector address in LBA */
+    UINT count      /* Number of sectors to read */
+)
+{
+  /* USER CODE BEGIN READ */
+  if (pdrv != 0 || count == 0) { return RES_PARERR; }
+  if (Stat & STA_NOINIT) { return RES_NOTRDY; }
+
+  uint32_t addr = fatfs_sector_to_addr(sector);
+  uint32_t size = (uint32_t)count * _MIN_SS;
+
+  /* Optional, if you don't use D-Cache, remove this line */
+  SCB_InvalidateDCache_by_Addr((uint32_t*)buff, size);
+
+  /* Read data from qspi device */
+  if (qspi_read(buff, addr, size) != HAL_OK) { return RES_ERROR; }
+
+  return RES_OK;
+  /* USER CODE END READ */
+}
+
+/**
+ * @brief  Writes Sector(s)
+ * @param  pdrv: Physical drive number (0..)
+ * @param  *buff: Data to be written
+ * @param  sector: Sector address (LBA)
+ * @param  count: Number of sectors to write (1..128)
+ * @retval DRESULT: Operation result
+ */
+#if _USE_WRITE == 1
+DRESULT USER_write (
+    BYTE pdrv,          /* Physical drive nmuber to identify the drive */
+    const BYTE *buff,   /* Data to be written */
+    DWORD sector,       /* Sector address in LBA */
+    UINT count          /* Number of sectors to write */
+)
+{
+  /* USER CODE BEGIN WRITE */
+  /* USER CODE HERE */
+  if(pdrv != 0 || count == 0) { return RES_PARERR; }
+  if(Stat & STA_NOINIT) { return RES_NOTRDY; }
+
+  uint32_t write_addr = fatfs_sector_to_addr(sector);
+  uint32_t remaining_bytes = (uint32_t) count * _MIN_SS;
+
+  /* Prepare work buffer */
+  uint8_t work[QSPI_SUBSECTOR_SIZE];
+
+  while(remaining_bytes > 0)
+  {
+    /*
+     * Calculate the start address of the 8KB block that contains the current write_addr.
+     * Calculation: 9000 & ~(8192 - 1) -> 0x2328 & 0xFFFFE000 -> 8192.
+     * So, block_addr = 8192.
+     */
+    uint32_t block_addr = write_addr & ~(QSPI_SUBSECTOR_SIZE - 1U);
+    //uint32_t offset = write_addr % QSPI_SUBSECTOR_SIZE;
+    //uint32_t block_addr = write_addr - offset;
+
+    /*
+     * Calculate the relative position (offset) of our write_addr within that 8KB block.
+     * Example: write_addr = 9000, block_addr = 8192.
+     * Calculation: 9000 - 8192 = 808.
+     * So, offset_inblk = 808. We will start writing 808 bytes into the block.
+     */
+    uint32_t offset_inblk = write_addr - block_addr;
+
+    /*
+     * Determine the size of the data 'chunk' to process in this single loop iteration.
+     * First, calculate the available space from our starting offset to the end of the block.
+     * Example: 8192 (block size) - 808 (offset) = 7384 bytes of available space.
+     * So, chunk = 7384.
+     */
+    uint32_t chunk = QSPI_SUBSECTOR_SIZE - offset_inblk;
+
+    /*
+     * The chunk size cannot be larger than the total data we have left to write.
+     * Example: chunk (7384) is not greater than remaining_bytes (10000), so we will write 7384 bytes in this loop.
+     * If remaining_bytes was smaller (e.g., 2000), we would adjust chunk to 2000.
+     */
+    if(chunk > remaining_bytes)
+    {
+      chunk = remaining_bytes;
+    }
+
+    /* read and store at work buffer */
+    if(qspi_read(work, block_addr, QSPI_SUBSECTOR_SIZE) != HAL_OK) { return RES_ERROR; }
+
+    /* replace work buffer */
+    memcpy(&work[offset_inblk], buff, chunk);
+
+    /* Skip if no changes */
+    if(memcmp(&work[offset_inblk], buff, chunk) == 0)
+    {
+      /* Data is identical, so skip the Erase/Program operations and move to the next iteration */
+      write_addr += chunk;
+      buff += chunk;
+      remaining_bytes -= chunk;
+      continue;
+    }
+
+    /* Optional, if you don't use D-Cache, remove this line */
+    SCB_CleanDCache_by_Addr((uint32_t*)work, QSPI_SUBSECTOR_SIZE);
+
+    /* Erase the block */
+    if(qspi_block_erase(block_addr) != HAL_OK) { return RES_ERROR; }
+
+    /* Program the entire block page by page */
+    for(uint32_t off = 0;off < QSPI_SUBSECTOR_SIZE;off += QSPI_PAGE_SIZE)
+    {
+      if(qspi_page_program(&work[off], block_addr + off, QSPI_PAGE_SIZE) != HAL_OK) { return RES_ERROR; }
+    }
+
+    /* Move to the next chunk to process */
+    write_addr += chunk;
+    buff += chunk;
+    remaining_bytes -= chunk;
+  }
+
+  return RES_OK;
+  /* USER CODE END WRITE */
+}
+#endif /* _USE_WRITE == 1 */
+
+/**
+ * @brief  I/O control operation
+ * @param  pdrv: Physical drive number (0..)
+ * @param  cmd: Control code
+ * @param  *buff: Buffer to send/receive control data
+ * @retval DRESULT: Operation result
+ */
+#if _USE_IOCTL == 1
+DRESULT USER_ioctl (
+    BYTE pdrv,      /* Physical drive nmuber (0..) */
+    BYTE cmd,       /* Control code */
+    void *buff      /* Buffer to send/receive control data */
+)
+{
+  /* USER CODE BEGIN IOCTL */
+  if(pdrv != 0) { return RES_PARERR; }
+  if(Stat & STA_NOINIT) { return RES_NOTRDY; }
+
+  switch(cmd)
+  {
+  case CTRL_SYNC:
+    /* All QSPI API calls are blocking and guarantee completion. */
+    return RES_OK;
+
+  case GET_SECTOR_COUNT:
+    /* Total capacity (in bytes) / Sector size (in bytes) */
+    *(DWORD*) buff = (DWORD) (QSPI_FLASH_SIZE / _MIN_SS);
+    return RES_OK;
+
+  case GET_SECTOR_SIZE:
+    *(WORD*) buff = (WORD) _MIN_SS; /* FatFs sector size */
+    return RES_OK;
+
+  case GET_BLOCK_SIZE:
+    /* Erase block size in unit of sector (e.g., 8KB / 512 bytes) */
+    *(DWORD*) buff = (DWORD) (QSPI_SUBSECTOR_SIZE / _MIN_SS);
+    return RES_OK;
+
+  default:
+    return RES_PARERR;
+  }
+
+  /* USER CODE END IOCTL */
+}
+#endif /* _USE_IOCTL == 1 */
+

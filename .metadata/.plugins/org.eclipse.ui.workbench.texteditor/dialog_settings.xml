@@ -1,8 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<item key="hasShownOverlayPopupBefore" value="true"/>
-	<item key="replaceBarOpen" value="false"/>
+	<item key="replaceBarOpen" value="true"/>
 	<list key="searchhistory">
+		<item value="STORAGE_BLK_SIZ"/>
+		<item value="offset_in_blk"/>
+		<item value="len_in_block"/>
+		<item value="offset_inblk"/>
+		<item value="check_fs"/>
+		<item value="find_volume"/>
+		<item value="qspi_block_erase_8k"/>
+		<item value="page_index_in_sector"/>
+		<item value="num_pages_per_sector"/>
+		<item value="num_data_sectors"/>
+		<item value=" num_data_sectors"/>
+		<item value="au"/>
+		<item value="Size"/>
+		<item value="FSR"/>
 		<item value="MT25QL512ABB_AutoPollingMemReady"/>
+	</list>
+	<list key="replacehistory">
+		<item value="_MIN_SS"/>
+		<item value="offset"/>
+		<item value="len_in_block"/>
+		<item value="qspi_block_erase"/>
+		<item value="page_index"/>
+		<item value="num_pages"/>
+		<item value="num_sectors"/>
 	</list>
 </section>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete 2 resources" deleteContents="false" description="Delete 2 resources" element1="/STM32H747I_QSPI_EXT_FLASH_CM7/Core/Inc/mt25tl01g.h" element2="/STM32H747I_QSPI_EXT_FLASH_CM7/Core/Src/mt25tl01g.c" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="2" stamp="1755090349373"/>
+</session>

@@ -22,8 +22,10 @@
 #include "usbd_storage_if.h"
 
 /* USER CODE BEGIN INCLUDE */
-#include "quadspi.h"
+#include <string.h>
 #include "mt25ql512abb.h"
+#include "quadspi.h"
+#include "ffconf.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,10 +34,6 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
-// STM32H747I-DISCO has two 64MB flash chips = 128MB total
-#define QSPI_FLASH_TOTAL_SIZE      (MT25QL512ABB_FLASH_SIZE * 2)  /* 128 MBytes */
-#define QSPI_FLASH_SECTOR_COUNT    (QSPI_FLASH_TOTAL_SIZE / MT25QL512ABB_SUBSECTOR_4K)
 
 /* Disk status */
 static volatile int8_t Storage_Status = -1; /* -1:Not initialized, 0:OK, 1:Error */
@@ -105,10 +103,10 @@ static volatile int8_t Storage_Status = -1; /* -1:Not initialized, 0:OK, 1:Error
 const int8_t STORAGE_Inquirydata_HS[] =
 {/* 36 */
 
-/* LUN 0 */
-0x00, 0x80, 0x02, 0x02, (STANDARD_INQUIRY_DATA_LEN - 5), 0x00, 0x00, 0x00, 'S', 'T', 'M', ' ', ' ', ' ', ' ', ' ', /* Manufacturer : 8 bytes */
-'P', 'r', 'o', 'd', 'u', 'c', 't', ' ', /* Product      : 16 Bytes */
-' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '0', '.', '0', '1' /* Version      : 4 Bytes */
+    /* LUN 0 */
+    0x00, 0x80, 0x02, 0x02, (STANDARD_INQUIRY_DATA_LEN - 5), 0x00, 0x00, 0x00, 'S', 'T', 'M', ' ', ' ', ' ', ' ', ' ', /* Manufacturer : 8 bytes */
+    'P', 'r', 'o', 'd', 'u', 'c', 't', ' ', /* Product      : 16 Bytes */
+    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '0', '.', '0', '1' /* Version      : 4 Bytes */
 };
 /* USER CODE END INQUIRY_DATA_HS */
 
@@ -150,6 +148,10 @@ static int8_t STORAGE_Write_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uin
 static int8_t STORAGE_GetMaxLun_HS(void);
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_DECLARATION */
+static inline uint32_t msc_lba_to_addr(uint32_t lba)
+{
+  return lba * _MIN_SS;
+}
 
 /* USER CODE END PRIVATE_FUNCTIONS_DECLARATION */
 
@@ -179,32 +181,12 @@ USBD_StorageTypeDef USBD_Storage_Interface_fops_HS =
 int8_t STORAGE_Init_HS(uint8_t lun)
 {
   /* USER CODE BEGIN 9 */
-  uint8_t id[6];
-
   if(Storage_Status == 0)
   {
     return (USBD_OK);
   }
 
-  if(MT25QL512ABB_EnterQPIMode(&hqspi) != MT25QL512ABB_OK)
-  {
-    return (USBD_FAIL);
-  }
-
-  if(MT25QL512ABB_ReadID(&hqspi, MT25QL512ABB_QPI_MODE, id, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
-  {
-    return (USBD_FAIL);
-  }
-
-  if((id[0] != 0x20) || (id[1] != 0x20) || (id[2] != 0xBA) || (id[3] != 0xBA) || (id[4] != 0x20) || (id[5] != 0x20))
-  {
-    return (USBD_FAIL);
-  }
-
-  if(MT25QL512ABB_Enter4BytesAddressMode(&hqspi, MT25QL512ABB_QPI_MODE) != MT25QL512ABB_OK)
-  {
-    return (USBD_FAIL);
-  }
+  /* QSPI external flash was initialized at main */
 
   Storage_Status = 0;
   return (USBD_OK);
@@ -221,8 +203,8 @@ int8_t STORAGE_Init_HS(uint8_t lun)
 int8_t STORAGE_GetCapacity_HS(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
 {
   /* USER CODE BEGIN 10 */
-  *block_num = QSPI_FLASH_SECTOR_COUNT;
-  *block_size = MT25QL512ABB_SUBSECTOR_4K;
+  *block_num = (uint32_t)(QSPI_FLASH_SIZE / _MIN_SS);
+  *block_size = (uint16_t)_MIN_SS;
   return (USBD_OK);
   /* USER CODE END 10 */
 }
@@ -237,16 +219,13 @@ int8_t STORAGE_IsReady_HS(uint8_t lun)
   /* USER CODE BEGIN 11 */
 
   uint8_t reg[2]; // Buffer for status register value (2 bytes for Dual-Flash)
+  if (MT25QL512ABB_ReadStatusRegister(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE, reg) != MT25QL512ABB_OK) { return (USBD_FAIL); }
 
-  if (MT25QL512ABB_ReadStatusRegister(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE, reg) != MT25QL512ABB_OK)
-  {
-    return (USBD_FAIL);
-  }
-
-  if ((reg[0] & MT25QL512ABB_SR_WIP) || (reg[1] & MT25QL512ABB_SR_WIP))
-  {
-    return (USBD_BUSY);
-  }
+#ifdef QSPI_DUAL_MODE
+  if ((reg[0] & MT25QL512ABB_SR_WIP) || (reg[1] & MT25QL512ABB_SR_WIP)) { return (USBD_BUSY); }
+#else
+  if (reg[0] & MT25QL512ABB_SR_WIP) { return (USBD_BUSY); }
+#endif
 
   return (USBD_OK);
   /* USER CODE END 11 */
@@ -275,25 +254,17 @@ int8_t STORAGE_IsWriteProtected_HS(uint8_t lun)
 int8_t STORAGE_Read_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 13 */
-  uint32_t address = blk_addr * MT25QL512ABB_SUBSECTOR_4K;
-  uint32_t size = blk_len * MT25QL512ABB_SUBSECTOR_4K;
-  int8_t ret = USBD_FAIL;
+  uint32_t addr = msc_lba_to_addr(blk_addr);
+  uint32_t size = (uint32_t)blk_len * _MIN_SS;
 
-  // Invalidate D-Cache before reading to get fresh data from QSPI flash
+  /* Optional, if you don't use D-Cache, remove this line */
   SCB_InvalidateDCache_by_Addr((uint32_t*)buf, size);
 
-  if(MT25QL512ABB_ReadSTR(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, buf, address, size) == MT25QL512ABB_OK)
-  {
-    ret = USBD_OK;
-  }
-  else
-  {
-    ret = USBD_FAIL;
-  }
+  if (qspi_read(buf, addr, size) != HAL_OK) { return (USBD_FAIL); }
 
   HAL_GPIO_TogglePin(LED4_GPIO_Port, LED4_Pin);
 
-  return ret;
+  return (USBD_OK);
   /* USER CODE END 13 */
 }
 
@@ -308,51 +279,19 @@ int8_t STORAGE_Read_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 int8_t STORAGE_Write_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 14 */
-  uint32_t i;
-  uint32_t address = blk_addr * MT25QL512ABB_SUBSECTOR_4K;
-  const uint8_t *p_data = buf;
-  int8_t ret = USBD_FAIL;
+  uint32_t write_addr = msc_lba_to_addr(blk_addr);
+  uint32_t size = (uint32_t) blk_len * _MIN_SS;
 
-  for(i = 0;i < blk_len;i++)
+  if (qspi_flash_write_data(write_addr, buf, size) == HAL_OK)
   {
-    // Erase the 4KB subsector
-    if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
-      break;
-    if(MT25QL512ABB_BlockErase(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, address, MT25QL512ABB_ERASE_4K) != MT25QL512ABB_OK)
-      break;
-    if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
-      break;
-
-    // Program the sector page by page
-    for(uint32_t offset = 0;offset < MT25QL512ABB_SUBSECTOR_4K;offset += MT25QL512ABB_PAGE_SIZE)
-    {
-      if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
-        break;
-      if(MT25QL512ABB_PageProgram(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, (uint8_t*) p_data, address + offset,
-          MT25QL512ABB_PAGE_SIZE) != MT25QL512ABB_OK)
-        break;
-      if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
-        break;
-
-      p_data += MT25QL512ABB_PAGE_SIZE;
-    }
-
-    // Invalidate D-Cache after writing to ensure the next read fetches fresh data
-    SCB_InvalidateDCache_by_Addr((uint32_t*)(buf + (i * MT25QL512ABB_SUBSECTOR_4K)), MT25QL512ABB_SUBSECTOR_4K);
-    address += MT25QL512ABB_SUBSECTOR_4K;
-
-    HAL_GPIO_TogglePin(LED4_GPIO_Port, LED4_Pin);
+    HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_SET);
+    return (USBD_OK);
   }
-
-  if(i == blk_len)
+  else
   {
-    ret = USBD_OK;
+    HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_SET);
+    return (USBD_FAIL);
   }
-
-  HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_SET);
-
-  return ret;
-
   /* USER CODE END 14 */
 }
 
