@@ -68,7 +68,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define TEST_BUFFER_SIZE    (256)
+#define TEST_BUFFER_SIZE    (512)
 uint8_t aTxBuffer[TEST_BUFFER_SIZE];
 uint8_t aRxBuffer[TEST_BUFFER_SIZE];
 MT25QL512ABB_Info_t flashInfo;
