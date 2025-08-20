@@ -23,6 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <string.h>
 #include "mt25ql512abb.h"
 /* USER CODE END Includes */
 
@@ -62,118 +63,201 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+int QSPI_Write_Full_Chip(void);
+int QSPI_Verify_Full_Chip(void);
+int Erase_Test_Flag(void);
+int Write_Test_Flag(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-/* Test configuration defines */
-#define QSPI_FLASH_SIZE_128MB   (0x8000000) /* 128 MB */
-#define QSPI_SECTOR_SIZE_64KB   (0x10000)   /* 64 KB */
+
+#define QSPI_DUAL_MODE
+
+#ifdef QSPI_DUAL_MODE
+#define QSPI_FLASH_SIZE         (0x8000000) /* 128 MB (2 * 512Mbit) */
+#define QSPI_SECTOR_SIZE        (0x20000)   /* 128 KB (2 * 64KB) */
+#define QSPI_SUBSECTOR_SIZE     (0x2000)    /* 8 KB (2 * 4KB) */
+#define QSPI_PAGE_SIZE          (512)       /* 512 Bytes (2 * 256B) */
+#define QSPI_DUAL_FLASH_MODE    MT25QL512ABB_DUALFLASH_ENABLE
+#else
+#define QSPI_FLASH_SIZE         (0x4000000) /* 64 MB (1 * 512Mbit) */
+#define QSPI_SECTOR_SIZE        (0x10000)   /* 64 KB */
+#define QSPI_SUBSECTOR_SIZE     (0x1000)    /* 4 KB */
 #define QSPI_PAGE_SIZE          (256)       /* 256 Bytes */
-#define TEST_BUFFER_SIZE        (256)       /* Test buffer size, same as page size */
+#define QSPI_DUAL_FLASH_MODE    MT25QL512ABB_DUALFLASH_DISABLE
+#endif
+
+#define TEST_BUFFER_SIZE        (QSPI_PAGE_SIZE)
+#define NUM_SECTORS             (QSPI_FLASH_SIZE / QSPI_SECTOR_SIZE)
+#define TEST_STATE_FLAG_ADDRESS ((NUM_SECTORS - 1) * QSPI_SECTOR_SIZE)
+#define WRITE_COMPLETE_FLAG     0x5A5A5A5A
+
+#define FSR_ALL_ERROR_FLAGS   (MT25QL512ABB_FSR_E_FAIL | MT25QL512ABB_FSR_P_FAIL | MT25QL512ABB_FSR_PRE)
 
 uint8_t aTxBuffer[TEST_BUFFER_SIZE];
 uint8_t aRxBuffer[TEST_BUFFER_SIZE];
 MT25QL512ABB_Info_t flashInfo;
-uint8_t id[6];
 
 /**
- * @brief Tests the first page of each 64KB sector across the entire 128MB flash.
- * @retval 1 on success, 0 on failure.
+ * @brief  Initializes the QSPI interface and the MT25QL512ABB flash memory.
+ * @retval 0 on success, -1 on failure.
  */
-int QSPI_Test_Full_Chip(void)
+int QSPI_Init(void)
 {
-  uint32_t num_sectors = QSPI_FLASH_SIZE_128MB / QSPI_SECTOR_SIZE_64KB;
-  uint32_t num_pages_per_sector = QSPI_SECTOR_SIZE_64KB / TEST_BUFFER_SIZE;
+  uint8_t id[6] = {0};
+
+  /* 1. Not Mandatory, Reset memory  */
+  if(MT25QL512ABB_ResetEnable(&hqspi, MT25QL512ABB_SPI_MODE) != MT25QL512ABB_OK) { return -1; }
+  if(MT25QL512ABB_ResetMemory(&hqspi, MT25QL512ABB_SPI_MODE) != MT25QL512ABB_OK) { return -1; }
+  HAL_Delay(1);
+
+  /* 2. Enter QPI mode */
+  if(MT25QL512ABB_EnterQPIMode(&hqspi) != MT25QL512ABB_OK) { return -1; }
+
+  /* 3. Read ID and verify based on the selected mode */
+  if(MT25QL512ABB_ReadID(&hqspi, MT25QL512ABB_QPI_MODE, id, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return -1; }
+
+#ifdef QSPI_DUAL_MODE
+  if((id[0] != 0x20) || (id[1] != 0x20) || (id[2] != 0xBA) || (id[3] != 0xBA) || (id[4] != 0x20) || (id[5] != 0x20)) { return -1; }
+#else
+  if((id[0] != 0x20) || (id[1] != 0xBA) || (id[2] != 0x20)) { return -1; }
+#endif
+
+  /* 4. Enter 4-byte address mode */
+  if(MT25QL512ABB_Enter4BytesAddressMode(&hqspi, MT25QL512ABB_QPI_MODE) != MT25QL512ABB_OK) { return -1; }
+
+  /* 5. Optional, Set Dummy Cycles */
+  //if(MT25QL512ABB_SetDummyCycles(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return -1; }
+
+  return 0;
+}
+
+/**
+ * @brief  Writes a test pattern to the QSPI flash
+ * @retval 0 on success, -1 on failure
+ */
+int QSPI_Write_Full_Chip(void)
+{
+  uint32_t num_sectors = (NUM_SECTORS - 1);
+  uint32_t num_pages = QSPI_SECTOR_SIZE / TEST_BUFFER_SIZE;
 
   for(uint32_t i = 0; i < num_sectors; i++)
   {
-    uint32_t sector_base_addr = i * QSPI_SECTOR_SIZE_64KB;
-    uint32_t page_index_in_sector = i % num_pages_per_sector;
-    uint32_t current_addr = sector_base_addr + (page_index_in_sector * TEST_BUFFER_SIZE);
+    uint32_t sector_base_addr = i * QSPI_SECTOR_SIZE;
+    uint32_t page_index = i % num_pages;
+    uint32_t current_addr = sector_base_addr + (page_index * TEST_BUFFER_SIZE);
 
-    // 1. Prepare data with a pattern unique to the address
-    for(uint16_t j = 0; j < TEST_BUFFER_SIZE; j++)
-    {
-      aTxBuffer[j] = (uint8_t)((current_addr + j) ^ (j));
-    }
+    /* 1. Fill aTxBuffer */
+    for(uint16_t j = 0; j < TEST_BUFFER_SIZE; j++) { aTxBuffer[j] = (j & 0xFF); }
 
-    // 2. Erase the entire 64KB sector to ensure the target page is ready for writing
-    if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
-    {
-      return 0;
-    }
-    if(MT25QL512ABB_BlockErase(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, sector_base_addr, MT25QL512ABB_ERASE_64K) != MT25QL512ABB_OK)
-    {
-      return 0;
-    }
-    if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
-    {
-      return 0;
-    }
+    /* 2. Erase */
+    if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return -1; }
+    if(MT25QL512ABB_BlockErase(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, sector_base_addr, MT25QL512ABB_ERASE_64K) != MT25QL512ABB_OK) { return -1; }
+    if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return -1; }
 
-    // 3. Write data to the calculated page address
-    if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
-    {
-      return 0;
-    }
-    if(MT25QL512ABB_PageProgram(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, aTxBuffer, current_addr, TEST_BUFFER_SIZE) != MT25QL512ABB_OK)
-    {
-      return 0;
-    }
-    if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_DUALFLASH_ENABLE) != MT25QL512ABB_OK)
-    {
-      return 0;
-    }
+    /* 3. Write */
+    if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return -1; }
+    if(MT25QL512ABB_PageProgram(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, aTxBuffer, current_addr, TEST_BUFFER_SIZE) != MT25QL512ABB_OK) { return -1; }
+    if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return -1; }
 
-    // 4. Read data back
-    if(MT25QL512ABB_ReadSTR(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, aRxBuffer, current_addr, TEST_BUFFER_SIZE) != MT25QL512ABB_OK)
-    {
-      return 0;
-    }
+    /* 4. Check Flag Register */
+    uint8_t flag_status[2] = { 0 };
+    if(MT25QL512ABB_ReadFlagStatusRegister(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE, flag_status) != MT25QL512ABB_OK) { return -1; }
+    if(((flag_status[0] & FSR_ALL_ERROR_FLAGS) != 0) || ((flag_status[1] & FSR_ALL_ERROR_FLAGS) != 0)) { return -1; }
 
-    // 5. Verify data
-    for(uint16_t j = 0; j < TEST_BUFFER_SIZE; j++)
-    {
-      if(aRxBuffer[j] != aTxBuffer[j])
-      {
-        return 0; // Failure
-      }
-    }
-
-    HAL_GPIO_TogglePin(LED4_GPIO_Port, LED4_Pin); //Toggle Blue LED
+    HAL_GPIO_TogglePin(LED4_GPIO_Port, LED4_Pin);
   }
-  return 1; // Success
+
+  HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_SET);
+  return 0;
+}
+
+/**
+ * @brief  Verifies the test pattern
+ * @retval 0 on success, -1 on failure
+ */
+int QSPI_Verify_Full_Chip(void)
+{
+  uint32_t num_sectors = (NUM_SECTORS - 1);
+  uint32_t num_pages = QSPI_SECTOR_SIZE / TEST_BUFFER_SIZE;
+
+  for(uint32_t i = 0; i < num_sectors; i++)
+  {
+    uint32_t sector_base_addr = i * QSPI_SECTOR_SIZE;
+    uint32_t page_index = i % num_pages;
+    uint32_t current_addr = sector_base_addr + (page_index * TEST_BUFFER_SIZE);
+
+    /* 1. Fill aTxBuffer */
+    for(uint16_t j = 0; j < TEST_BUFFER_SIZE; j++) { aTxBuffer[j] = (j & 0xFF); }
+
+    /* 2. Read */
+    if(MT25QL512ABB_ReadSTR(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, aRxBuffer, current_addr, TEST_BUFFER_SIZE) != MT25QL512ABB_OK) { return -1; }
+
+    /* 3. Compare */
+    if(memcmp(aRxBuffer, aTxBuffer,TEST_BUFFER_SIZE ) != 0) { return -1; }
+
+    HAL_GPIO_TogglePin(LED4_GPIO_Port, LED4_Pin);
+  }
+
+  HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_SET);
+  return 0;
+}
+
+/**
+ * @brief  Writes the 'Write Complete' flag to its dedicated sector.
+ * @retval 0 on success, -1 on failure.
+ */
+int Write_Test_Flag(void)
+{
+  uint32_t flag_data = WRITE_COMPLETE_FLAG;
+
+  /* 1. Erase */
+  if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return -1; }
+  if(MT25QL512ABB_BlockErase(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, TEST_STATE_FLAG_ADDRESS, MT25QL512ABB_ERASE_64K) != MT25QL512ABB_OK) { return -1; }
+  if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return -1; }
+
+  /* 2. Write flag */
+  if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return -1; }
+  if(MT25QL512ABB_PageProgram(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, (uint8_t*) &flag_data, TEST_STATE_FLAG_ADDRESS, sizeof(flag_data)) != MT25QL512ABB_OK) { return -1; }
+  if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return -1; }
+
+  return 0;
+}
+
+/**
+ * @brief  Erases the flash sector dedicated to the test state flag.
+ * @retval 0 on success, -1 on failure.
+ */
+int Erase_Test_Flag(void)
+{
+  /* 1. Erase flag */
+  if(MT25QL512ABB_WriteEnable(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return -1; }
+  if(MT25QL512ABB_BlockErase(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, TEST_STATE_FLAG_ADDRESS, MT25QL512ABB_ERASE_64K) != MT25QL512ABB_OK) { return -1; }
+  if(MT25QL512ABB_AutoPollingMemReady(&hqspi, MT25QL512ABB_QPI_MODE, QSPI_DUAL_FLASH_MODE) != MT25QL512ABB_OK) { return -1; }
+
+  return 0;
 }
 
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
-  */
+ * @brief  The application entry point.
+ * @retval int
+ */
 int main(void)
 {
 
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
-/* USER CODE BEGIN Boot_Mode_Sequence_0 */
+  /* USER CODE BEGIN Boot_Mode_Sequence_0 */
 #if defined(DUAL_CORE_BOOT_SYNC_SEQUENCE)
   int32_t timeout;
 #endif /* DUAL_CORE_BOOT_SYNC_SEQUENCE */
-/* USER CODE END Boot_Mode_Sequence_0 */
+  /* USER CODE END Boot_Mode_Sequence_0 */
 
-  /* Enable the CPU Cache */
-
-  /* Enable I-Cache---------------------------------------------------------*/
-  SCB_EnableICache();
-
-  /* Enable D-Cache---------------------------------------------------------*/
-  SCB_EnableDCache();
-
-/* USER CODE BEGIN Boot_Mode_Sequence_1 */
+  /* USER CODE BEGIN Boot_Mode_Sequence_1 */
 #if defined(DUAL_CORE_BOOT_SYNC_SEQUENCE)
   /* Wait until CPU2 boots and enters in stop mode or timeout*/
   timeout = 0xFFFF;
@@ -184,7 +268,7 @@ int main(void)
     Error_Handler();
   }
 #endif /* DUAL_CORE_BOOT_SYNC_SEQUENCE */
-/* USER CODE END Boot_Mode_Sequence_1 */
+  /* USER CODE END Boot_Mode_Sequence_1 */
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -196,7 +280,7 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
-/* USER CODE BEGIN Boot_Mode_Sequence_2 */
+  /* USER CODE BEGIN Boot_Mode_Sequence_2 */
 #if defined(DUAL_CORE_BOOT_SYNC_SEQUENCE)
   /* When system initialization is finished, Cortex-M7 will release Cortex-M4 by means of
    HSEM notification */
@@ -215,7 +299,7 @@ int main(void)
     Error_Handler();
   }
 #endif /* DUAL_CORE_BOOT_SYNC_SEQUENCE */
-/* USER CODE END Boot_Mode_Sequence_2 */
+  /* USER CODE END Boot_Mode_Sequence_2 */
 
   /* USER CODE BEGIN SysInit */
 
@@ -226,44 +310,47 @@ int main(void)
   MX_QUADSPI_Init();
   /* USER CODE BEGIN 2 */
 
-  int32_t flashStatus = MT25QL512ABB_OK;
-  int full_chip_test_ok = 0;
+  uint32_t test_state_flag = 0;
 
-  /* 1. Enter QPI mode */
-  flashStatus = MT25QL512ABB_EnterQPIMode(&hqspi);
-  if(flashStatus != MT25QL512ABB_OK)
+  /* 1. QPI Initialize */
+  if(QSPI_Init() < 0)
   {
     Error_Handler();
   }
 
-  /* 2. Read ID and verify */
-  flashStatus = MT25QL512ABB_ReadID(&hqspi, MT25QL512ABB_QPI_MODE, id, MT25QL512ABB_DUALFLASH_ENABLE);
-  if((flashStatus != MT25QL512ABB_OK) ||
-      (id[0] != 0x20) || (id[1] != 0x20) ||
-      (id[2] != 0xBA) || (id[3] != 0xBA) ||
-      (id[4] != 0x20) || (id[5] != 0x20))
+  /* 2. Read flag */
+  if(MT25QL512ABB_ReadSTR(&hqspi, MT25QL512ABB_QPI_MODE, MT25QL512ABB_4BYTES_SIZE, (uint8_t*) &test_state_flag, TEST_STATE_FLAG_ADDRESS, sizeof(test_state_flag)) != MT25QL512ABB_OK)
   {
     Error_Handler();
   }
 
-  /* 3. Enter 4-byte address mode */
-  flashStatus = MT25QL512ABB_Enter4BytesAddressMode(&hqspi, MT25QL512ABB_QPI_MODE);
-  if(flashStatus != MT25QL512ABB_OK)
+  if(test_state_flag != WRITE_COMPLETE_FLAG)
   {
-    Error_Handler();
-  }
+    /* 3. Write Stage */
+    HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
 
-  /* 4. Perform Full Chip Test */
-  full_chip_test_ok = QSPI_Test_Full_Chip();
+    if(QSPI_Write_Full_Chip() < 0) { Error_Handler(); }
 
-  /* 5. Indicate final test result with LED */
-  if(full_chip_test_ok)
-  {
-    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET); // Green LED ON
+    if(Write_Test_Flag() < 0) { Error_Handler(); }
+
+    HAL_NVIC_SystemReset();
   }
   else
   {
-    HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_RESET); // Red LED ON
+    /*4. Verification Stage */
+    if(QSPI_Verify_Full_Chip() < 0)
+    {
+      HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_RESET); // Red LED for Verify Fail
+    }
+    else
+    {
+      HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET); // Green LED for Verify Success
+    }
+
+    if(Erase_Test_Flag() < 0)
+    {
+      Error_Handler();
+    }
   }
 
   /* USER CODE END 2 */
@@ -280,27 +367,31 @@ int main(void)
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
+ * @brief System Clock Configuration
+ * @retval None
+ */
 void SystemClock_Config(void)
 {
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_OscInitTypeDef RCC_OscInitStruct =
+  { 0 };
+  RCC_ClkInitTypeDef RCC_ClkInitStruct =
+  { 0 };
 
   /** Supply configuration update enable
-  */
+   */
   HAL_PWREx_ConfigSupply(PWR_DIRECT_SMPS_SUPPLY);
 
   /** Configure the main internal regulator output voltage
-  */
+   */
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-  while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
+  while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY))
+  {
+  }
 
   /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
+   * in the RCC_OscInitTypeDef structure.
+   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
@@ -313,16 +404,15 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_3;
   RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
   RCC_OscInitStruct.PLL.PLLFRACN = 0;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  if(HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
   }
 
   /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
-                              |RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
+   */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1
+      | RCC_CLOCKTYPE_D1PCLK1;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
@@ -331,7 +421,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2;
   RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  if(HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -342,9 +432,9 @@ void SystemClock_Config(void)
 /* USER CODE END 4 */
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
@@ -358,12 +448,12 @@ void Error_Handler(void)
 }
 #ifdef USE_FULL_ASSERT
 /**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
+ * @brief  Reports the name of the source file and the source line number
+ *         where the assert_param error has occurred.
+ * @param  file: pointer to the source file name
+ * @param  line: assert_param error line source number
+ * @retval None
+ */
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */

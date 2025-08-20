@@ -257,6 +257,9 @@
 #define MT25QL512ABB_VLBSR_SWL                            0x01U   /*!< Sector write lock                                       */
 #define MT25QL512ABB_VLBSR_SLD                            0x02U   /*!< Sector lock down                                        */
 
+/* Dummy cycles value */
+#define MT25QL512ABB_DUMMY_CYCLES_READ_QUAD               0xFU    /*!< Dummy cycles for Volatile Configuration Register        */
+
 /**
   * @}
   */
@@ -359,6 +362,12 @@ int32_t MT25QL512ABB_ReadID(QSPI_HandleTypeDef *Ctx, MT25QL512ABB_Interface_t Mo
 /* Reset Commands *************************************************************/
 int32_t MT25QL512ABB_ResetEnable(QSPI_HandleTypeDef *Ctx, MT25QL512ABB_Interface_t Mode);
 int32_t MT25QL512ABB_ResetMemory(QSPI_HandleTypeDef *Ctx, MT25QL512ABB_Interface_t Mode);
+
+/* Configure dummy cycles */
+int32_t MT25QL512ABB_SetDummyCycles(QSPI_HandleTypeDef *Ctx, MT25QL512ABB_Interface_t Mode, MT25QL512ABB_DualFlash_t DualFlash);
+
+/* Read flag register */
+int32_t MT25QL512ABB_ReadFlagStatusRegister(QSPI_HandleTypeDef *Ctx, MT25QL512ABB_Interface_t Mode, MT25QL512ABB_DualFlash_t DualFlash, uint8_t *Value);
 
 /**
   * @}

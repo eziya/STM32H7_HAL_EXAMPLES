@@ -1098,7 +1098,7 @@ int32_t MT25QL512ABB_ResetMemory(QSPI_HandleTypeDef *Ctx, MT25QL512ABB_Interface
   s_command.AddressMode       = QSPI_ADDRESS_NONE;
   s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
   s_command.DummyCycles       = 0;
-  s_command.DataMode          = QSPI_DATA_NONE;
+  s_command.DataMode          = (Mode == MT25QL512ABB_QPI_MODE) ? QSPI_DATA_4_LINES : (Mode == MT25QL512ABB_DPI_MODE) ? QSPI_DATA_2_LINES : QSPI_DATA_1_LINE;
   s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
   s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
   s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
@@ -1111,6 +1111,110 @@ int32_t MT25QL512ABB_ResetMemory(QSPI_HandleTypeDef *Ctx, MT25QL512ABB_Interface
 
   return MT25QL512ABB_OK;
 }
+
+
+/**
+  * @brief  This function configures the dummy cycles on memory side.
+  * It reads the Volatile Configuration Register, modifies the
+  * dummy cycle bits, and writes the new value back.
+  * SPI/DPI/QPI; 1-x-y/2-x-y/4-x-y
+  * @param  Ctx        Component object pointer
+  * @param  Mode       Interface mode
+  * @param  DualFlash  Dual flash mode state
+  * @retval error status
+  */
+int32_t MT25QL512ABB_SetDummyCycles(QSPI_HandleTypeDef *Ctx, MT25QL512ABB_Interface_t Mode, MT25QL512ABB_DualFlash_t DualFlash)
+{
+  QSPI_CommandTypeDef s_command;
+  uint8_t reg[2];
+
+  s_command.InstructionMode   = (Mode == MT25QL512ABB_QPI_MODE) ? QSPI_INSTRUCTION_4_LINES : (Mode == MT25QL512ABB_DPI_MODE) ? QSPI_INSTRUCTION_2_LINES : QSPI_INSTRUCTION_1_LINE;
+  s_command.Instruction       = MT25QL512ABB_READ_VOL_CFG_REG_CMD; /* 수정됨: EVCR -> VCR */
+  s_command.AddressMode       = QSPI_ADDRESS_NONE;
+  s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+  s_command.DummyCycles       = 0;
+  s_command.DataMode          = (Mode == MT25QL512ABB_QPI_MODE) ? QSPI_DATA_4_LINES : (Mode == MT25QL512ABB_DPI_MODE) ? QSPI_DATA_2_LINES : QSPI_DATA_1_LINE;
+  s_command.NbData            = (DualFlash == MT25QL512ABB_DUALFLASH_ENABLE) ? 2U : 1U;
+  s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+  s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+  s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+  if (HAL_QSPI_Command(Ctx, &s_command, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    return MT25QL512ABB_ERROR;
+  }
+
+  if (HAL_QSPI_Receive(Ctx, reg, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    return MT25QL512ABB_ERROR;
+  }
+
+  if (MT25QL512ABB_WriteEnable(Ctx, Mode, DualFlash) != MT25QL512ABB_OK)
+  {
+    return MT25QL512ABB_ERROR;
+  }
+
+  reg[0] = (reg[0] & ~MT25QL512ABB_VCR_DC) | ((MT25QL512ABB_DUMMY_CYCLES_READ_QUAD << 4) & MT25QL512ABB_VCR_DC);
+  if (DualFlash == MT25QL512ABB_DUALFLASH_ENABLE)
+  {
+     reg[1] = (reg[1] & ~MT25QL512ABB_VCR_DC) | ((MT25QL512ABB_DUMMY_CYCLES_READ_QUAD << 4) & MT25QL512ABB_VCR_DC);
+  }
+
+  s_command.Instruction = MT25QL512ABB_WRITE_VOL_CFG_REG_CMD;
+
+  if (HAL_QSPI_Command(Ctx, &s_command, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    return MT25QL512ABB_ERROR;
+  }
+
+  if (HAL_QSPI_Transmit(Ctx, reg, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    return MT25QL512ABB_ERROR;
+  }
+
+  return MT25QL512ABB_OK;
+}
+
+/**
+  * @brief  Read Flash Flag Status register value
+  * SPI/DPI/QPI; 1-0-1/2-0-2/4-0-4
+  * @param  Ctx Component object pointer
+  * @param  Mode Interface mode
+  * @param  DualFlash Dual flash mode state
+  * @param  Value Flag Status register value pointer
+  * @retval error status
+  */
+int32_t MT25QL512ABB_ReadFlagStatusRegister(QSPI_HandleTypeDef *Ctx, MT25QL512ABB_Interface_t Mode, MT25QL512ABB_DualFlash_t DualFlash, uint8_t *Value)
+{
+    QSPI_CommandTypeDef s_command;
+
+    /* Initialize the reading of flag status register */
+    s_command.InstructionMode   = (Mode == MT25QL512ABB_QPI_MODE) ? QSPI_INSTRUCTION_4_LINES : (Mode == MT25QL512ABB_DPI_MODE) ? QSPI_INSTRUCTION_2_LINES : QSPI_INSTRUCTION_1_LINE;
+    s_command.Instruction       = MT25QL512ABB_READ_FLAG_STATUS_REG_CMD; // Command: 0x70
+    s_command.AddressMode       = QSPI_ADDRESS_NONE;
+    s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+    s_command.DummyCycles       = 0;
+    s_command.DataMode          = (Mode == MT25QL512ABB_QPI_MODE) ? QSPI_DATA_4_LINES : (Mode == MT25QL512ABB_DPI_MODE) ? QSPI_DATA_2_LINES : QSPI_DATA_1_LINE;
+    s_command.NbData            = (DualFlash == MT25QL512ABB_DUALFLASH_ENABLE) ? 2U : 1U;
+    s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+    s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+    s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+    /* Configure the command */
+    if (HAL_QSPI_Command(Ctx, &s_command, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+    {
+      return MT25QL512ABB_ERROR;
+    }
+
+    /* Reception of the data */
+    if (HAL_QSPI_Receive(Ctx, Value, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+    {
+      return MT25QL512ABB_ERROR;
+    }
+
+    return MT25QL512ABB_OK;
+}
+
 
 /**
   * @}
