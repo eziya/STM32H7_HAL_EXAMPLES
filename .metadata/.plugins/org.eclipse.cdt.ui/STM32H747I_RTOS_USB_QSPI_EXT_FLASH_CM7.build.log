@@ -1,4 +1,4 @@
-21:01:01 **** Clean-only build of configuration Debug for project STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7 ****
+11:03:13 **** Clean-only build of configuration Debug for project STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7 ****
 make -j12 clean 
 rm -rf ./USB_DEVICE/Target/usbd_conf.cyclo ./USB_DEVICE/Target/usbd_conf.d ./USB_DEVICE/Target/usbd_conf.o ./USB_DEVICE/Target/usbd_conf.su
 rm -rf ./USB_DEVICE/App/usb_device.cyclo ./USB_DEVICE/App/usb_device.d ./USB_DEVICE/App/usb_device.o ./USB_DEVICE/App/usb_device.su ./USB_DEVICE/App/usbd_desc.cyclo ./USB_DEVICE/App/usbd_desc.d ./USB_DEVICE/App/usbd_desc.o ./USB_DEVICE/App/usbd_desc.su ./USB_DEVICE/App/usbd_storage_if.cyclo ./USB_DEVICE/App/usbd_storage_if.d ./USB_DEVICE/App/usbd_storage_if.o ./USB_DEVICE/App/usbd_storage_if.su
@@ -14,5 +14,5 @@ rm -rf ./Common/Src/system_stm32h7xx_dualcore_boot_cm4_cm7.cyclo ./Common/Src/sy
 rm -rf STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7.elf STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7.list STM32H747I_RTOS_USB_QSPI_EXT_FLASH_CM7.map default.size.stdout
  
 
-21:01:01 Build Finished. 0 errors, 0 warnings. (took 250ms)
+11:03:13 Build Finished. 0 errors, 0 warnings. (took 387ms)
 
